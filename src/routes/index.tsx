@@ -61,42 +61,46 @@ function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pt-16 pb-20 sm:pt-24">
-        <div className="grid items-center gap-12 md:grid-cols-2">
-          <Reveal className="space-y-6">
-            <p className="text-sm font-medium uppercase tracking-widest text-primary">
-              Erth
-            </p>
-            <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-              {siteConfig.oneLiner}
-            </h1>
-            <p className="max-w-md text-pretty text-base leading-relaxed text-muted-foreground">
-              {siteConfig.visionStatement}
-            </p>
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Link
-                to="/"
-                hash="download"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <Download className="size-4" aria-hidden="true" />
-                Download the app
-              </Link>
-              <Link
-                to="/about"
-                className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Learn about Erth
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
-            </div>
-          </Reveal>
+      <section className="relative overflow-hidden">
+        <StarBackdrop />
+        <div className="relative mx-auto max-w-6xl px-4 pt-20 pb-24 sm:pt-28">
+          <div className="grid items-center gap-12 md:grid-cols-[1.15fr_1fr]">
+            <Reveal className="space-y-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                Erth
+              </p>
+              <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                {siteConfig.oneLiner}
+              </h1>
+              <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+                {siteConfig.visionStatement}
+              </p>
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link
+                  to="/"
+                  hash="download"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Download className="size-4" aria-hidden="true" />
+                  Download the app
+                </Link>
+                <Link
+                  to="/about"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Learn about Erth
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+              </div>
+            </Reveal>
 
-          <Reveal delayMs={120} className="flex justify-center text-foreground">
-            <HeroVisual className="w-full max-w-sm" />
-          </Reveal>
+            <Reveal delayMs={120} className="flex justify-center text-foreground">
+              <HeroVisual className="w-full max-w-sm" />
+            </Reveal>
+          </div>
         </div>
       </section>
+
 
       {/* Our Vision */}
       <section className="border-t border-border/60 bg-card/30">
