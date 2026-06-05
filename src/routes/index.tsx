@@ -7,6 +7,7 @@ import { vision, coreIdeas, audiences } from "@/lib/erth-content";
 import { Reveal } from "@/components/reveal";
 import { HeroVisual } from "@/components/hero-visual";
 import { QrDownload } from "@/components/qr-download";
+import { StarBackdrop } from "@/components/star-backdrop";
 
 export const Route = createFileRoute("/")({
   head: () =>
