@@ -27,7 +27,7 @@ export const Route = createFileRoute("/updates/$slug")({
 });
 
 function ReleaseDetailPage() {
-  const r = Route.useLoaderData();
+  const r = Route.useLoaderData() as import("@/lib/public-content-types").Release;
   return (
     <article className="mx-auto max-w-3xl px-4 pt-16 pb-24 sm:pt-24">
       <Link
