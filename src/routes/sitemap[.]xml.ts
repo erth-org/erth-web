@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { getProductionUrl } from "@/lib/site-config";
+import { releases } from "@/content/updates";
+import { publicFeedback } from "@/content/public-feedback";
 
 // Absolute URLs are derived from the configured production URL.
 // Until one is set, paths fall back to relative (dev/preview only).
@@ -21,10 +23,26 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/features", changefreq: "monthly", priority: "0.8" },
           { path: "/updates", changefreq: "weekly", priority: "0.7" },
           { path: "/about", changefreq: "monthly", priority: "0.7" },
-          { path: "/report", changefreq: "monthly", priority: "0.6" },
+          { path: "/report", changefreq: "weekly", priority: "0.6" },
           { path: "/privacy", changefreq: "yearly", priority: "0.3" },
           { path: "/terms", changefreq: "yearly", priority: "0.3" },
         ];
+
+        // Only include detail routes for verified, existing content.
+        for (const r of releases) {
+          entries.push({
+            path: `/updates/${r.slug}`,
+            changefreq: "monthly",
+            priority: "0.5",
+          });
+        }
+        for (const item of publicFeedback) {
+          entries.push({
+            path: `/report/${item.slug}`,
+            changefreq: "weekly",
+            priority: "0.4",
+          });
+        }
 
         const urls = entries.map((e) =>
           [

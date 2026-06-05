@@ -3,6 +3,9 @@ import { ArrowRight, Download } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
 import { StarBackdrop } from "@/components/star-backdrop";
+import { ScreenshotFrame } from "@/components/screenshot-frame";
+import { PlatformBadges } from "@/components/platform-badges";
+import { EmptyState } from "@/components/empty-state";
 import { features } from "@/content/features";
 
 export const Route = createFileRoute("/features")({
@@ -10,66 +13,59 @@ export const Route = createFileRoute("/features")({
     buildPageHead({
       title: "Features — Erth",
       description:
-        "The foundational capabilities that make Erth a calm, lasting digital map of your world.",
+        "Foundational capabilities that make Erth a calm, lasting digital map of the places, moments, and experiences that shape your world.",
       path: "/features",
     }),
   component: FeaturesPage,
 });
 
 function FeaturesPage() {
-  // In production, only show verified entries.
-  const visible = import.meta.env.DEV ? features : features.filter((f) => f.verified);
+  // Production hides unverified entries; dev shows them with a marker.
+  const visible = import.meta.env.DEV
+    ? features
+    : features.filter((f) => f.verified);
 
   return (
     <>
       <section className="relative overflow-hidden">
         <StarBackdrop />
-        <div className="relative mx-auto max-w-4xl px-4 pt-20 pb-16 sm:pt-28">
-          <Reveal className="space-y-6 text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              What Erth does
+        <div className="relative mx-auto max-w-4xl px-4 pt-20 pb-16 sm:pt-28 sm:pb-20">
+          <Reveal className="space-y-5 text-center">
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+              Erth · Foundational capabilities
             </p>
-            <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-              Foundational capabilities, kept intentionally simple.
+            <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+              The essential ways Erth helps you preserve and understand your
+              experiences.
             </h1>
-            <p className="mx-auto max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground">
+            <p className="mx-auto max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
               Erth is built around a small set of ideas done well. These are the
-              capabilities the app is being shaped around — not an exhaustive
-              feature list.
+              capabilities the app is shaped around — not an exhaustive feature
+              list.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-24">
+      <section className="mx-auto max-w-6xl px-4 pb-24 sm:pb-32">
         {visible.length === 0 ? (
-          <EmptyFeatures />
+          <EmptyState
+            title="Verified feature overview coming soon."
+            description="We're publishing this page once the capability summaries have been confirmed against the live application."
+          />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2">
+          <ol className="space-y-24 sm:space-y-32">
             {visible.map((f, i) => (
-              <Reveal
-                key={f.title}
-                delayMs={i * 70}
-                className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-7"
+              <li
+                key={f.id}
+                id={f.id}
+                className="scroll-mt-24"
+                aria-labelledby={`feature-${f.id}-title`}
               >
-                <f.icon className="size-7 text-primary" aria-hidden="true" />
-                <h2 className="text-xl font-semibold text-foreground">
-                  {f.title}
-                </h2>
-                <p className="text-sm font-medium text-foreground/80">
-                  {f.summary}
-                </p>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {f.description}
-                </p>
-                {!f.verified && import.meta.env.DEV && (
-                  <p className="mt-2 text-xs italic text-primary/80">
-                    Dev only — content awaiting verification.
-                  </p>
-                )}
-              </Reveal>
+                <FeatureRow feature={f} index={i} />
+              </li>
             ))}
-          </div>
+          </ol>
         )}
       </section>
 
@@ -101,16 +97,57 @@ function FeaturesPage() {
   );
 }
 
-function EmptyFeatures() {
+function FeatureRow({
+  feature,
+  index,
+}: {
+  feature: (typeof features)[number];
+  index: number;
+}) {
+  const reverse = index % 2 === 1;
   return (
-    <div className="mx-auto max-w-xl rounded-2xl border border-dashed border-border bg-card/40 p-10 text-center">
-      <p className="text-base font-medium text-foreground">
-        Verified feature overview coming soon.
-      </p>
-      <p className="mt-2 text-sm text-muted-foreground">
-        We're publishing this page once the capability summaries have been
-        confirmed against the live application.
-      </p>
-    </div>
+    <Reveal>
+      <div
+        className={`grid items-center gap-10 md:grid-cols-2 md:gap-16 ${
+          reverse ? "md:[&>div:first-child]:order-2" : ""
+        }`}
+      >
+        <div className="space-y-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            {String(index + 1).padStart(2, "0")} · Capability
+          </p>
+          <h2
+            id={`feature-${feature.id}-title`}
+            className="text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl"
+          >
+            {feature.title}
+          </h2>
+          <p className="text-pretty text-lg leading-relaxed text-foreground/85">
+            {feature.summary}
+          </p>
+          <div className="rounded-xl border-l-2 border-primary/60 bg-card/40 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              User benefit
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              {feature.benefit}
+            </p>
+          </div>
+          <PlatformBadges platforms={feature.platforms} />
+          {!feature.verified && import.meta.env.DEV && (
+            <p className="text-xs italic text-primary/80">
+              Dev only — content awaiting verification.
+            </p>
+          )}
+        </div>
+        <div>
+          <ScreenshotFrame
+            src={feature.screenshotSrc}
+            alt={feature.screenshotAlt}
+            loading={index === 0 ? "eager" : "lazy"}
+          />
+        </div>
+      </div>
+    </Reveal>
   );
 }

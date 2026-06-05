@@ -17,6 +17,8 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UpdatesSlugRouteImport } from './routes/updates.$slug'
+import { Route as ReportSlugRouteImport } from './routes/report.$slug'
 
 const UpdatesRoute = UpdatesRouteImport.update({
   id: '/updates',
@@ -58,26 +60,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpdatesSlugRoute = UpdatesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => UpdatesRoute,
+} as any)
+const ReportSlugRoute = ReportSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ReportRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
-  '/report': typeof ReportRoute
+  '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/updates': typeof UpdatesRoute
+  '/updates': typeof UpdatesRouteWithChildren
+  '/report/$slug': typeof ReportSlugRoute
+  '/updates/$slug': typeof UpdatesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
-  '/report': typeof ReportRoute
+  '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/updates': typeof UpdatesRoute
+  '/updates': typeof UpdatesRouteWithChildren
+  '/report/$slug': typeof ReportSlugRoute
+  '/updates/$slug': typeof UpdatesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,10 +101,12 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
-  '/report': typeof ReportRoute
+  '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/updates': typeof UpdatesRoute
+  '/updates': typeof UpdatesRouteWithChildren
+  '/report/$slug': typeof ReportSlugRoute
+  '/updates/$slug': typeof UpdatesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +119,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
+    | '/report/$slug'
+    | '/updates/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +131,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
+    | '/report/$slug'
+    | '/updates/$slug'
   id:
     | '__root__'
     | '/'
@@ -121,6 +143,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
+    | '/report/$slug'
+    | '/updates/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -128,10 +152,10 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   FeaturesRoute: typeof FeaturesRoute
   PrivacyRoute: typeof PrivacyRoute
-  ReportRoute: typeof ReportRoute
+  ReportRoute: typeof ReportRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
-  UpdatesRoute: typeof UpdatesRoute
+  UpdatesRoute: typeof UpdatesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -192,18 +216,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/updates/$slug': {
+      id: '/updates/$slug'
+      path: '/$slug'
+      fullPath: '/updates/$slug'
+      preLoaderRoute: typeof UpdatesSlugRouteImport
+      parentRoute: typeof UpdatesRoute
+    }
+    '/report/$slug': {
+      id: '/report/$slug'
+      path: '/$slug'
+      fullPath: '/report/$slug'
+      preLoaderRoute: typeof ReportSlugRouteImport
+      parentRoute: typeof ReportRoute
+    }
   }
 }
+
+interface ReportRouteChildren {
+  ReportSlugRoute: typeof ReportSlugRoute
+}
+
+const ReportRouteChildren: ReportRouteChildren = {
+  ReportSlugRoute: ReportSlugRoute,
+}
+
+const ReportRouteWithChildren =
+  ReportRoute._addFileChildren(ReportRouteChildren)
+
+interface UpdatesRouteChildren {
+  UpdatesSlugRoute: typeof UpdatesSlugRoute
+}
+
+const UpdatesRouteChildren: UpdatesRouteChildren = {
+  UpdatesSlugRoute: UpdatesSlugRoute,
+}
+
+const UpdatesRouteWithChildren =
+  UpdatesRoute._addFileChildren(UpdatesRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   FeaturesRoute: FeaturesRoute,
   PrivacyRoute: PrivacyRoute,
-  ReportRoute: ReportRoute,
+  ReportRoute: ReportRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
-  UpdatesRoute: UpdatesRoute,
+  UpdatesRoute: UpdatesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

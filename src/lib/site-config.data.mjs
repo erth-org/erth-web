@@ -32,12 +32,19 @@ export const siteConfigData = {
     termsIsPlaceholder: true,
   },
 
-  // Report form endpoint. When `enabled` is false or `endpoint` is null,
-  // the form renders in a clearly disabled "coming soon" state and NEVER
-  // pretends a submission succeeded.
-  reporting: {
-    enabled: false,
-    endpoint: null,
+  // Feedback subsystem. Submission and voting are BOTH gated on a real
+  // backend endpoint. Neither is enabled until proper server-side validation,
+  // moderation, rate limiting, and spam protection are in place.
+  //
+  // While disabled:
+  //   - The submission form is shown for review but cannot submit.
+  //   - Vote counts are shown read-only — no clickable vote control.
+  //   - The page NEVER shows a false success state.
+  feedback: {
+    submissionEnabled: false,
+    submissionEndpoint: null,
+    votingEnabled: false,
+    votingEndpoint: null,
   },
 
   // Placeholder cards demonstrate layout in development only. Production either
@@ -59,12 +66,9 @@ export function isPlaceholderTeamMember(m) {
 }
 
 /**
- * Returns a list of unresolved critical values.
- * Empty array = production-ready.
- *
- * Content collections (features/updates/public roadmap) are validated
- * separately by `getInvalidContentEntries()` which is imported lazily
- * by the build-gate. Missing content is OK; placeholder content is NOT.
+ * Returns a list of unresolved critical config values.
+ * Empty array = config-ready. Content validation is separate; see
+ * scripts/check-site-config.mjs.
  */
 export function getUnresolvedPlaceholders(cfg = siteConfigData) {
   const issues = [];
@@ -77,6 +81,14 @@ export function getUnresolvedPlaceholders(cfg = siteConfigData) {
     issues.push("Privacy Policy still contains placeholder content");
   if (cfg.legal.termsIsPlaceholder)
     issues.push("Terms of Service still contains placeholder content");
+
+  // Defence-in-depth: enabling submission/voting requires a real endpoint.
+  if (cfg.feedback.submissionEnabled && !cfg.feedback.submissionEndpoint) {
+    issues.push("feedback.submissionEnabled is true but submissionEndpoint is null");
+  }
+  if (cfg.feedback.votingEnabled && !cfg.feedback.votingEndpoint) {
+    issues.push("feedback.votingEnabled is true but votingEndpoint is null");
+  }
 
   cfg.team.forEach((m, i) => {
     if (isPlaceholderTeamMember(m)) {
