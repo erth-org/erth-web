@@ -9,12 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ReportRouteImport } from './routes/report'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const UpdatesRoute = UpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -25,9 +33,19 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -44,43 +62,87 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/updates': typeof UpdatesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/updates': typeof UpdatesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/updates': typeof UpdatesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/privacy' | '/sitemap.xml' | '/terms'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/features'
+    | '/privacy'
+    | '/report'
+    | '/sitemap.xml'
+    | '/terms'
+    | '/updates'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/privacy' | '/sitemap.xml' | '/terms'
-  id: '__root__' | '/' | '/about' | '/privacy' | '/sitemap.xml' | '/terms'
+  to:
+    | '/'
+    | '/about'
+    | '/features'
+    | '/privacy'
+    | '/report'
+    | '/sitemap.xml'
+    | '/terms'
+    | '/updates'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/features'
+    | '/privacy'
+    | '/report'
+    | '/sitemap.xml'
+    | '/terms'
+    | '/updates'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  FeaturesRoute: typeof FeaturesRoute
   PrivacyRoute: typeof PrivacyRoute
+  ReportRoute: typeof ReportRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  UpdatesRoute: typeof UpdatesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/updates': {
+      id: '/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof UpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -95,11 +157,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -122,20 +198,13 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  FeaturesRoute: FeaturesRoute,
   PrivacyRoute: PrivacyRoute,
+  ReportRoute: ReportRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  UpdatesRoute: UpdatesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

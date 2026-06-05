@@ -32,6 +32,14 @@ export const siteConfigData = {
     termsIsPlaceholder: true,
   },
 
+  // Report form endpoint. When `enabled` is false or `endpoint` is null,
+  // the form renders in a clearly disabled "coming soon" state and NEVER
+  // pretends a submission succeeded.
+  reporting: {
+    enabled: false,
+    endpoint: null,
+  },
+
   // Placeholder cards demonstrate layout in development only. Production either
   // renders real members or omits the Team grid entirely.
   team: [
@@ -53,6 +61,10 @@ export function isPlaceholderTeamMember(m) {
 /**
  * Returns a list of unresolved critical values.
  * Empty array = production-ready.
+ *
+ * Content collections (features/updates/public roadmap) are validated
+ * separately by `getInvalidContentEntries()` which is imported lazily
+ * by the build-gate. Missing content is OK; placeholder content is NOT.
  */
 export function getUnresolvedPlaceholders(cfg = siteConfigData) {
   const issues = [];

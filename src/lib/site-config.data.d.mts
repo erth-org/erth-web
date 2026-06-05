@@ -20,6 +20,10 @@ export interface SiteConfigData {
     privacyIsPlaceholder: boolean;
     termsIsPlaceholder: boolean;
   };
+  reporting: {
+    enabled: boolean;
+    endpoint: string | null;
+  };
   team: TeamMemberData[];
 }
 

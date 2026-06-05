@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { siteConfig, getPublishableTeam } from "@/lib/site-config";
 import { Reveal } from "@/components/reveal";
+import { StarBackdrop } from "@/components/star-backdrop";
 import { TeamMemberCard } from "@/components/team-member-card";
 
 export const Route = createFileRoute("/about")({
@@ -37,27 +38,31 @@ function AboutPage() {
 
   return (
     <>
-      <section className="mx-auto max-w-3xl px-4 pt-16 pb-12 sm:pt-24">
-        <Reveal className="space-y-6">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            About Erth
-          </h1>
-          <p className="text-base leading-relaxed text-muted-foreground">
-            Erth exists because the moments and places that define a life
-            deserve a lasting home — not a feed that forgets them the moment you
-            scroll past.
-          </p>
-          <p className="text-base leading-relaxed text-muted-foreground">
-            {siteConfig.visionStatement}
-          </p>
-          <p className="text-base leading-relaxed text-muted-foreground">
-            Our long-term ambition is for Erth to become the place people turn
-            to when they want to see the shape of their own experiences across
-            the world — and to do it with care, clarity, and respect for the
-            people who use it.
-          </p>
-        </Reveal>
+      <section className="relative overflow-hidden">
+        <StarBackdrop />
+        <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 sm:pt-28">
+          <Reveal className="space-y-6">
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              About Erth
+            </h1>
+            <p className="text-base leading-relaxed text-muted-foreground">
+              Erth exists because the moments and places that define a life
+              deserve a lasting home — not a feed that forgets them the moment you
+              scroll past.
+            </p>
+            <p className="text-base leading-relaxed text-muted-foreground">
+              {siteConfig.visionStatement}
+            </p>
+            <p className="text-base leading-relaxed text-muted-foreground">
+              Our long-term ambition is for Erth to become the place people turn
+              to when they want to see the shape of their own experiences across
+              the world — and to do it with care, clarity, and respect for the
+              people who use it.
+            </p>
+          </Reveal>
+        </div>
       </section>
+
 
       <section className="border-t border-border/60 bg-card/30">
         <div className="mx-auto max-w-6xl px-4 py-16">

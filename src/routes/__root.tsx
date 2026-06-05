@@ -120,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Fjalla+One&family=Permanent+Marker&family=Geist+Mono:wght@400;500&display=swap",
       },
       {
         rel: "stylesheet",
@@ -156,8 +156,14 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <DevPlaceholderBanner />
       <div className="flex min-h-screen flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:outline-none"
+        >
+          Skip to content
+        </a>
         <SiteHeader />
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </main>
