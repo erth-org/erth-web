@@ -30,7 +30,7 @@ export const Route = createFileRoute("/report/$slug")({
 });
 
 function FeedbackDetail() {
-  const item = Route.useLoaderData();
+  const item = Route.useLoaderData() as import("@/lib/public-content-types").PublicFeedbackItem;
   const release =
     item.status === "fulfilled" && item.releasedInUpdateSlug
       ? getReleaseBySlug(item.releasedInUpdateSlug)
