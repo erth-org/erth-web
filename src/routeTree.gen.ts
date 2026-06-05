@@ -18,6 +18,7 @@ import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UpdatesSlugRouteImport } from './routes/updates.$slug'
+import { Route as ReportSlugRouteImport } from './routes/report.$slug'
 
 const UpdatesRoute = UpdatesRouteImport.update({
   id: '/updates',
@@ -64,16 +65,22 @@ const UpdatesSlugRoute = UpdatesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => UpdatesRoute,
 } as any)
+const ReportSlugRoute = ReportSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ReportRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
-  '/report': typeof ReportRoute
+  '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/updates': typeof UpdatesRouteWithChildren
+  '/report/$slug': typeof ReportSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
 }
 export interface FileRoutesByTo {
@@ -81,10 +88,11 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
-  '/report': typeof ReportRoute
+  '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/updates': typeof UpdatesRouteWithChildren
+  '/report/$slug': typeof ReportSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
 }
 export interface FileRoutesById {
@@ -93,10 +101,11 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
-  '/report': typeof ReportRoute
+  '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/updates': typeof UpdatesRouteWithChildren
+  '/report/$slug': typeof ReportSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
+    | '/report/$slug'
     | '/updates/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
+    | '/report/$slug'
     | '/updates/$slug'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
+    | '/report/$slug'
     | '/updates/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -140,7 +152,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   FeaturesRoute: typeof FeaturesRoute
   PrivacyRoute: typeof PrivacyRoute
-  ReportRoute: typeof ReportRoute
+  ReportRoute: typeof ReportRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UpdatesRoute: typeof UpdatesRouteWithChildren
@@ -211,8 +223,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpdatesSlugRouteImport
       parentRoute: typeof UpdatesRoute
     }
+    '/report/$slug': {
+      id: '/report/$slug'
+      path: '/$slug'
+      fullPath: '/report/$slug'
+      preLoaderRoute: typeof ReportSlugRouteImport
+      parentRoute: typeof ReportRoute
+    }
   }
 }
+
+interface ReportRouteChildren {
+  ReportSlugRoute: typeof ReportSlugRoute
+}
+
+const ReportRouteChildren: ReportRouteChildren = {
+  ReportSlugRoute: ReportSlugRoute,
+}
+
+const ReportRouteWithChildren =
+  ReportRoute._addFileChildren(ReportRouteChildren)
 
 interface UpdatesRouteChildren {
   UpdatesSlugRoute: typeof UpdatesSlugRoute
@@ -230,7 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   FeaturesRoute: FeaturesRoute,
   PrivacyRoute: PrivacyRoute,
-  ReportRoute: ReportRoute,
+  ReportRoute: ReportRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UpdatesRoute: UpdatesRouteWithChildren,
