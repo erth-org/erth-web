@@ -9,7 +9,7 @@ import { siteConfig } from "@/lib/site-config";
 import { FEEDBACK_TYPE_LABEL } from "@/lib/public-content-types";
 
 export const Route = createFileRoute("/report/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): import("@/lib/public-content-types").PublicFeedbackItem => {
     const item = getFeedbackBySlug(params.slug);
     if (!item) throw notFound();
     return item;
