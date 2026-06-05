@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ReportRouteImport } from './routes/report'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as AboutRouteImport } from './routes/about'
@@ -30,6 +31,11 @@ const TermsRoute = TermsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/updates': typeof UpdatesRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/updates': typeof UpdatesRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRoute
   '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/updates': typeof UpdatesRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/features'
     | '/privacy'
+    | '/report'
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/features'
     | '/privacy'
+    | '/report'
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/features'
     | '/privacy'
+    | '/report'
     | '/sitemap.xml'
     | '/terms'
     | '/updates'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   FeaturesRoute: typeof FeaturesRoute
   PrivacyRoute: typeof PrivacyRoute
+  ReportRoute: typeof ReportRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UpdatesRoute: typeof UpdatesRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   FeaturesRoute: FeaturesRoute,
   PrivacyRoute: PrivacyRoute,
+  ReportRoute: ReportRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UpdatesRoute: UpdatesRoute,
