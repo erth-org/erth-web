@@ -8,6 +8,13 @@ export interface TeamMemberData {
   linkedinUrl: string | null;
 }
 
+export interface FeedbackConfigData {
+  submissionEnabled: boolean;
+  submissionEndpoint: string | null;
+  votingEnabled: boolean;
+  votingEndpoint: string | null;
+}
+
 export interface SiteConfigData {
   productionUrl: string;
   oneLiner: string;
@@ -20,10 +27,7 @@ export interface SiteConfigData {
     privacyIsPlaceholder: boolean;
     termsIsPlaceholder: boolean;
   };
-  reporting: {
-    enabled: boolean;
-    endpoint: string | null;
-  };
+  feedback: FeedbackConfigData;
   team: TeamMemberData[];
 }
 
