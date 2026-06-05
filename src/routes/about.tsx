@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { siteConfig, getPublishableTeam } from "@/lib/site-config";
 import { Reveal } from "@/components/reveal";
+import { StarBackdrop } from "@/components/star-backdrop";
 import { TeamMemberCard } from "@/components/team-member-card";
 
 export const Route = createFileRoute("/about")({
