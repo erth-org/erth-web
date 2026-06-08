@@ -33,9 +33,7 @@ export function LegalLayout({
           {title}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {lastUpdated
-            ? `Last updated: ${lastUpdated}`
-            : "Last updated: pending"}
+          {lastUpdated ? `Last updated: ${lastUpdated}` : "Last updated: pending"}
         </p>
       </header>
 
@@ -44,27 +42,25 @@ export function LegalLayout({
           role="note"
           className="mb-10 flex gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4"
         >
-          <AlertTriangle
-            className="mt-0.5 size-5 shrink-0 text-primary"
-            aria-hidden="true"
-          />
+          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
           <div className="text-sm text-foreground">
             <p className="font-semibold">Development only — pending legal review</p>
             <p className="mt-1 text-muted-foreground">
               This content is a structural placeholder and is{" "}
-              <strong>not legally reviewed or production-ready</strong>. Final
-              copy must be confirmed before launch.
+              <strong>not legally reviewed or production-ready</strong>. Final copy must be
+              confirmed before launch.
             </p>
           </div>
         </div>
       )}
 
-      <div className="space-y-6 text-sm leading-relaxed text-muted-foreground">
-        {intro}
-      </div>
+      <div className="space-y-6 text-sm leading-relaxed text-muted-foreground">{intro}</div>
 
       {sections.length > 0 && (
-        <nav aria-label="On this page" className="my-10 rounded-xl border border-border bg-card p-5">
+        <nav
+          aria-label="On this page"
+          className="my-10 rounded-xl border border-border bg-card p-5"
+        >
           <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-foreground">
             On this page
           </p>

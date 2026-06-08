@@ -58,10 +58,7 @@ export const siteConfigData = {
 
 export function isPlaceholderTeamMember(m) {
   return (
-    m.name === PLACEHOLDER ||
-    m.role === PLACEHOLDER ||
-    m.bio === PLACEHOLDER ||
-    m.photoUrl === null
+    m.name === PLACEHOLDER || m.role === PLACEHOLDER || m.bio === PLACEHOLDER || m.photoUrl === null
   );
 }
 
@@ -80,7 +77,7 @@ export function getUnresolvedPlaceholders(cfg = siteConfigData) {
   if (cfg.legal.privacyIsPlaceholder)
     issues.push("Privacy Policy still contains placeholder content");
   if (cfg.legal.termsIsPlaceholder)
-    issues.push("Terms of Service still contains placeholder content");
+    issues.push("Terms & Conditions still contains placeholder content");
 
   // Defence-in-depth: enabling submission/voting requires a real endpoint.
   if (cfg.feedback.submissionEnabled && !cfg.feedback.submissionEndpoint) {
