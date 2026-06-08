@@ -52,22 +52,21 @@ export function HeroVisual({ className }: { className?: string }) {
     if (reduceMotion) {
       node.style.transform = "none";
       node.style.opacity = "1";
+      node.style.willChange = "auto";
       return;
     }
 
     let frame = 0;
     const clamp = (value: number) => Math.min(1, Math.max(0, value));
+    node.style.willChange = "transform";
 
     const update = () => {
       frame = 0;
       const distance = Math.max(1, window.innerHeight * 0.72);
       const progress = clamp(window.scrollY / distance);
       const scale = 1 - progress * 0.2;
-      const translateY = progress * -18;
-      const opacity = 1 - progress * 0.08;
 
-      node.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
-      node.style.opacity = String(opacity);
+      node.style.transform = `translate3d(0, 0, 0) scale(${scale})`;
     };
 
     const scheduleUpdate = () => {
@@ -82,6 +81,7 @@ export function HeroVisual({ className }: { className?: string }) {
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", scheduleUpdate);
+      node.style.willChange = "auto";
     };
   }, [reduceMotion]);
 
@@ -91,7 +91,13 @@ export function HeroVisual({ className }: { className?: string }) {
       className={cn("relative aspect-square w-full max-w-lg overflow-hidden", className)}
       aria-label="Animated globe of connected places"
       role="img"
-      style={{ transform: reduceMotion ? undefined : "scale(1)", transformOrigin: "center" }}
+      style={{
+        backfaceVisibility: "hidden",
+        contain: "layout paint",
+        isolation: "isolate",
+        transform: reduceMotion ? undefined : "translate3d(0, 0, 0) scale(1)",
+        transformOrigin: "center",
+      }}
     >
       {/*
         The custom element is registered by the root module script. Attributes
@@ -102,10 +108,11 @@ export function HeroVisual({ className }: { className?: string }) {
         ref: playerRef,
         src: withBasePath("animations/globe-animation.lottie"),
         background: "transparent",
-        speed: "1",
+        speed: "0.85",
         loop: reduceMotion ? undefined : "true",
         autoplay: reduceMotion ? undefined : "true",
-        class: "absolute inset-0 size-full",
+        renderer: "canvas",
+        class: "absolute inset-0 size-full transform-gpu",
       })}
     </div>
   );

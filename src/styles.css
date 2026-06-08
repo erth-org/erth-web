@@ -438,6 +438,32 @@
   }
 }
 
+@media (max-width: 767px) {
+  .erth-site-shell::before {
+    animation: none;
+    opacity: 0.36;
+    will-change: auto;
+  }
+
+  .erth-visible-stars,
+  .erth-visible-stars::before,
+  .erth-visible-stars::after,
+  .erth-sky-motion {
+    display: none;
+  }
+
+  .erth-stars-layer {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .erth-stars-layer-twinkle {
+    animation: none;
+    opacity: 0.18;
+    will-change: auto;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

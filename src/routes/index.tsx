@@ -68,20 +68,20 @@ function HomePage() {
       <section className="relative overflow-hidden">
         <StarBackdrop />
         <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-14 sm:pt-28 sm:pb-24">
-          <div className="grid items-center gap-8 md:grid-cols-[1fr_1.05fr] md:gap-12">
-            <Reveal className="space-y-5 sm:space-y-6">
-              <h1 className="text-balance text-[2.35rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <div className="grid min-w-0 items-center gap-3 sm:gap-8 md:grid-cols-[1fr_1.05fr] md:gap-12">
+            <Reveal className="min-w-0 space-y-5 sm:space-y-6">
+              <h1 className="max-w-full text-balance text-[2.15rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 A living digital map of your world.
               </h1>
-              <p className="max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
+              <p className="max-w-full text-pretty text-[0.95rem] leading-relaxed text-muted-foreground sm:max-w-xl sm:text-lg">
                 Capture meaningful experiences and build a lasting digital footprint of where you
                 have been and what mattered along the way.
               </p>
-              <div className="grid gap-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:pt-2">
+              <div className="grid max-w-full gap-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:pt-2">
                 <Link
                   to="/"
                   hash="download"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex min-h-11 w-full max-w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
                 >
                   <Download className="size-4" aria-hidden="true" />
                   <span className="sm:hidden">Download</span>
@@ -89,7 +89,7 @@ function HomePage() {
                 </Link>
                 <Link
                   to="/about"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex min-h-11 w-full max-w-full items-center justify-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
                 >
                   Learn more
                   <ArrowRight className="size-4" aria-hidden="true" />
@@ -97,8 +97,13 @@ function HomePage() {
               </div>
             </Reveal>
 
-            <Reveal delayMs={120} className="flex justify-center overflow-visible text-foreground">
-              <HeroVisual className="w-[110vw] max-w-none shrink-0 sm:w-full sm:max-w-xl lg:max-w-[34rem]" />
+            <Reveal
+              delayMs={120}
+              className="relative -mt-1 h-[118vw] min-h-[20rem] overflow-visible text-foreground sm:mt-0 sm:flex sm:h-auto sm:min-h-0 sm:justify-center"
+            >
+              <div className="absolute left-1/2 top-0 w-[137.5vw] -translate-x-1/2 sm:static sm:w-full sm:max-w-xl sm:translate-x-0 lg:max-w-[34rem]">
+                <HeroVisual className="w-full max-w-none" />
+              </div>
             </Reveal>
           </div>
         </div>
