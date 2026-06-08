@@ -1,5 +1,6 @@
 import { Linkedin, User } from "lucide-react";
 import type { TeamMember } from "@/lib/site-config";
+import { withBasePath } from "@/lib/asset-path";
 
 export function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
@@ -7,7 +8,7 @@ export function TeamMemberCard({ member }: { member: TeamMember }) {
       <div className="mb-4 flex size-16 items-center justify-center overflow-hidden rounded-full border border-border bg-background">
         {member.photoUrl ? (
           <img
-            src={member.photoUrl}
+            src={withBasePath(member.photoUrl)}
             alt={`Portrait of ${member.name}`}
             width={64}
             height={64}
@@ -20,9 +21,7 @@ export function TeamMemberCard({ member }: { member: TeamMember }) {
       </div>
       <h3 className="text-base font-semibold text-foreground">{member.name}</h3>
       <p className="text-sm text-primary">{member.role}</p>
-      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-        {member.bio}
-      </p>
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
       {member.linkedinUrl && (
         <a
           href={member.linkedinUrl}

@@ -7,18 +7,24 @@ import { ScreenshotFrame } from "@/components/screenshot-frame";
 import { getReleaseBySlug } from "@/content/updates";
 import type { ReleaseChange } from "@/lib/public-content-types";
 
+const RELEASE_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
 export const Route = createFileRoute("/updates/$slug")({
   loader: ({ params }) => {
     const release = getReleaseBySlug(params.slug);
+    if (release?.isDemo && !import.meta.env.DEV) throw notFound();
     if (!release) throw notFound();
     return release;
   },
   head: ({ loaderData }) =>
     buildPageHead({
-      title: loaderData
-        ? `${loaderData.version} — ${loaderData.title} · Erth updates`
-        : "Release — Erth updates",
-      description: loaderData?.summary ?? "Erth release notes.",
+      title: loaderData ? `${loaderData.version} — ${loaderData.title} — Erth` : "Release — Erth",
+      description: loaderData?.summary ?? "Release notes.",
       path: `/updates/${loaderData?.slug ?? ""}`,
     }),
   component: ReleaseDetailPage,
@@ -40,13 +46,8 @@ function ReleaseDetailPage() {
 
       <Reveal className="mt-6 space-y-4">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="font-mono text-sm font-semibold text-foreground">
-            {r.version}
-          </span>
-          <time
-            dateTime={r.releaseDate}
-            className="font-mono text-xs text-muted-foreground"
-          >
+          <span className="font-mono text-sm font-semibold text-foreground">{r.version}</span>
+          <time dateTime={r.releaseDate} className="font-mono text-xs text-muted-foreground">
             {formatDate(r.releaseDate)}
           </time>
           <PlatformBadges platforms={r.platforms} className="ml-auto" />
@@ -54,9 +55,12 @@ function ReleaseDetailPage() {
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
           {r.title}
         </h1>
-        <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
-          {r.summary}
-        </p>
+        <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{r.summary}</p>
+        {r.isDemo && (
+          <p className="inline-flex w-fit rounded-full border border-primary/35 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary">
+            Demo content — not published information
+          </p>
+        )}
       </Reveal>
 
       {r.majorFeature && (
@@ -72,11 +76,7 @@ function ReleaseDetailPage() {
           </p>
           {r.heroImageSrc && (
             <div className="mt-5">
-              <ScreenshotFrame
-                src={r.heroImageSrc}
-                alt={r.heroImageAlt}
-                loading="eager"
-              />
+              <ScreenshotFrame src={r.heroImageSrc} alt={r.heroImageAlt} loading="eager" />
             </div>
           )}
         </Reveal>
@@ -101,13 +101,7 @@ function ReleaseDetailPage() {
   );
 }
 
-function ChangeSection({
-  title,
-  changes,
-}: {
-  title: string;
-  changes: ReleaseChange[];
-}) {
+function ChangeSection({ title, changes }: { title: string; changes: ReleaseChange[] }) {
   if (!changes || changes.length === 0) return null;
   return (
     <section>
@@ -116,15 +110,10 @@ function ChangeSection({
       </h2>
       <ul className="mt-4 space-y-4">
         {changes.map((c) => (
-          <li
-            key={c.id}
-            className="rounded-xl border border-border/70 bg-card/30 p-4"
-          >
+          <li key={c.id} className="rounded-xl border border-border/70 bg-card/30 p-4">
             <p className="text-base font-medium text-foreground">{c.title}</p>
             {c.description && (
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                {c.description}
-              </p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{c.description}</p>
             )}
             {c.category && (
               <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80">
@@ -178,11 +167,7 @@ function ReleaseError({ reset }: { reset: () => void }) {
 }
 
 function formatDate(iso: string) {
-  const d = new Date(iso);
+  const d = new Date(`${iso}T00:00:00.000Z`);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  return RELEASE_DATE_FORMATTER.format(d);
 }

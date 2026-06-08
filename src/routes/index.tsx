@@ -12,7 +12,7 @@ import { StarBackdrop } from "@/components/star-backdrop";
 export const Route = createFileRoute("/")({
   head: () =>
     buildPageHead({
-      title: "Erth — A living digital map of your world",
+      title: "Erth",
       description: siteConfig.oneLiner,
       path: "/",
     }),
@@ -30,9 +30,7 @@ function useDownloadHash() {
     let raf = 0;
     const scrollToDownload = () => {
       if (window.location.hash !== "#download") return;
-      const reduce = window.matchMedia?.(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
+      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
       raf = window.requestAnimationFrame(() => {
         const el = document.getElementById("download");
         if (!el) return;
@@ -55,9 +53,14 @@ function useDownloadHash() {
   }, []);
 }
 
-
 function HomePage() {
   useDownloadHash();
+
+  const demoSnapshot = [
+    { label: "[Demo] Saved places", value: "128", detail: "Mock count for layout review" },
+    { label: "[Demo] Private moments", value: "342", detail: "Mock count for layout review" },
+    { label: "[Demo] Shared collections", value: "12", detail: "Mock count for layout review" },
+  ];
 
   return (
     <>
@@ -65,16 +68,14 @@ function HomePage() {
       <section className="relative overflow-hidden">
         <StarBackdrop />
         <div className="relative mx-auto max-w-6xl px-4 pt-20 pb-24 sm:pt-28">
-          <div className="grid items-center gap-12 md:grid-cols-[1.15fr_1fr]">
+          <div className="grid items-center gap-12 md:grid-cols-[1fr_1.05fr]">
             <Reveal className="space-y-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                Erth
-              </p>
               <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                {siteConfig.oneLiner}
+                A living digital map of your world.
               </h1>
               <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-                {siteConfig.visionStatement}
+                Capture meaningful experiences and build a lasting digital footprint of where you
+                have been and what mattered along the way.
               </p>
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
@@ -89,19 +90,45 @@ function HomePage() {
                   to="/about"
                   className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Learn about Erth
+                  Learn more
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </div>
             </Reveal>
 
             <Reveal delayMs={120} className="flex justify-center text-foreground">
-              <HeroVisual className="w-full max-w-sm" />
+              <HeroVisual className="w-full max-w-xl lg:max-w-[34rem]" />
             </Reveal>
           </div>
         </div>
       </section>
 
+      <section className="border-t border-border/60 bg-card/20">
+        <div className="mx-auto max-w-6xl px-4 py-14">
+          <Reveal className="mb-6 max-w-2xl">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-primary">
+              Demo snapshot — not published information
+            </p>
+          </Reveal>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {demoSnapshot.map((item, i) => (
+              <Reveal
+                key={item.label}
+                delayMs={i * 70}
+                className="rounded-2xl border border-border bg-card p-5"
+              >
+                <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {item.label}
+                </p>
+                <p className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
+                  {item.value}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Our Vision */}
       <section className="border-t border-border/60 bg-card/30">
@@ -110,18 +137,10 @@ function HomePage() {
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               Our vision
             </h2>
-            <p className="text-base leading-relaxed text-muted-foreground">
-              {vision.problem}
-            </p>
-            <p className="text-base leading-relaxed text-muted-foreground">
-              {vision.why}
-            </p>
-            <p className="text-base leading-relaxed text-muted-foreground">
-              {vision.future}
-            </p>
-            <p className="text-base leading-relaxed text-muted-foreground">
-              {vision.contribution}
-            </p>
+            <p className="text-base leading-relaxed text-muted-foreground">{vision.problem}</p>
+            <p className="text-base leading-relaxed text-muted-foreground">{vision.why}</p>
+            <p className="text-base leading-relaxed text-muted-foreground">{vision.future}</p>
+            <p className="text-base leading-relaxed text-muted-foreground">{vision.contribution}</p>
           </Reveal>
         </div>
       </section>
@@ -130,7 +149,7 @@ function HomePage() {
       <section className="mx-auto max-w-6xl px-4 py-20">
         <Reveal className="mb-10 max-w-2xl">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            What Erth is built on
+            What it's built on
           </h2>
         </Reveal>
         <div className="grid gap-6 md:grid-cols-3">
@@ -141,9 +160,7 @@ function HomePage() {
               className="rounded-2xl border border-border bg-card p-6"
             >
               <idea.icon className="size-6 text-primary" aria-hidden="true" />
-              <h3 className="mt-4 text-lg font-semibold text-foreground">
-                {idea.title}
-              </h3>
+              <h3 className="mt-4 text-lg font-semibold text-foreground">{idea.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {idea.description}
               </p>
@@ -157,11 +174,11 @@ function HomePage() {
         <div className="mx-auto max-w-6xl px-4 py-20">
           <Reveal className="mb-10 max-w-2xl">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Who Erth is for
+              Who it's for
             </h2>
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              Erth is built for anyone who cares about the places and moments
-              that shape a life — and for those evaluating where it is headed.
+              Built for anyone who cares about the places and moments that shape a life, and for
+              those evaluating where the product is headed.
             </p>
           </Reveal>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -173,9 +190,7 @@ function HomePage() {
               >
                 <a.icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
                 <div>
-                  <h3 className="text-base font-semibold text-foreground">
-                    {a.title}
-                  </h3>
+                  <h3 className="text-base font-semibold text-foreground">{a.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                     {a.description}
                   </p>
@@ -194,11 +209,11 @@ function HomePage() {
       >
         <Reveal className="mb-8 max-w-2xl">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Download Erth
+            Download the app
           </h2>
           <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-            Bring your world with you. Get Erth on your phone to start mapping
-            the places and moments that matter.
+            Bring your world with you. Get the app on your phone to start mapping the places and
+            moments that matter.
           </p>
         </Reveal>
         <Reveal>

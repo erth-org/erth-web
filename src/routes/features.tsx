@@ -20,10 +20,8 @@ export const Route = createFileRoute("/features")({
 });
 
 function FeaturesPage() {
-  // Production hides unverified entries; dev shows them with a marker.
-  const visible = import.meta.env.DEV
-    ? features
-    : features.filter((f) => f.verified);
+  // Production hides unverified and demo entries; dev shows them with markers.
+  const visible = import.meta.env.DEV ? features : features.filter((f) => f.verified && !f.isDemo);
 
   return (
     <>
@@ -32,16 +30,14 @@ function FeaturesPage() {
         <div className="relative mx-auto max-w-4xl px-4 pt-20 pb-16 sm:pt-28 sm:pb-20">
           <Reveal className="space-y-5 text-center">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
-              Erth · Foundational capabilities
+              Foundational capabilities
             </p>
             <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
-              The essential ways Erth helps you preserve and understand your
-              experiences.
+              Essential ways to preserve and understand your experiences.
             </h1>
             <p className="mx-auto max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Erth is built around a small set of ideas done well. These are the
-              capabilities the app is shaped around — not an exhaustive feature
-              list.
+              Built around a small set of ideas done well. These are the capabilities the app is
+              shaped around, not an exhaustive feature list.
             </p>
           </Reveal>
         </div>
@@ -81,13 +77,13 @@ function FeaturesPage() {
               className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Download className="size-4" aria-hidden="true" />
-              Download Erth
+              Download the app
             </Link>
             <Link
               to="/about"
               className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              About Erth
+              About
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
@@ -97,13 +93,7 @@ function FeaturesPage() {
   );
 }
 
-function FeatureRow({
-  feature,
-  index,
-}: {
-  feature: (typeof features)[number];
-  index: number;
-}) {
+function FeatureRow({ feature, index }: { feature: (typeof features)[number]; index: number }) {
   const reverse = index % 2 === 1;
   return (
     <Reveal>
@@ -129,11 +119,14 @@ function FeatureRow({
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               User benefit
             </p>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              {feature.benefit}
-            </p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{feature.benefit}</p>
           </div>
           <PlatformBadges platforms={feature.platforms} />
+          {feature.isDemo && (
+            <p className="inline-flex w-fit rounded-full border border-primary/35 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary">
+              Demo content — not published information
+            </p>
+          )}
           {!feature.verified && import.meta.env.DEV && (
             <p className="text-xs italic text-primary/80">
               Dev only — content awaiting verification.

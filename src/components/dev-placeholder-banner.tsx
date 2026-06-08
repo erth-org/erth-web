@@ -22,11 +22,10 @@ export function DevPlaceholderBanner() {
       <div className="mx-auto flex max-w-6xl items-start gap-2">
         <AlertTriangle className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
         <p className="flex-1">
-          <span className="font-semibold">Development build:</span>{" "}
-          {issues.length} unresolved placeholder
-          {issues.length === 1 ? "" : "s"} ({issues.join("; ")}). Production
-          builds are blocked until these are resolved in{" "}
-          <code className="font-mono">src/lib/site-config.ts</code>.
+          <span className="font-semibold">Development build:</span> {issues.length} unresolved
+          placeholder
+          {issues.length === 1 ? "" : "s"} ({issues.join("; ")}). Production builds are blocked
+          until these are resolved in <code className="font-mono">src/lib/site-config.ts</code>.
         </p>
         <button
           type="button"

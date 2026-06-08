@@ -27,6 +27,12 @@ export interface Feature {
    * live application. Production hides unverified entries.
    */
   verified: boolean;
+  /**
+   * Demo-only content used to review layouts before real published content is
+   * available. Production routes hide demo entries and the production build
+   * gate blocks while demo entries remain.
+   */
+  isDemo?: boolean;
 }
 
 export interface ReleaseChange {
@@ -55,12 +61,15 @@ export interface Release {
   newFeatures: ReleaseChange[];
   improvements: ReleaseChange[];
   bugFixes: ReleaseChange[];
+  /**
+   * Demo-only content used to review layouts before real published content is
+   * available. Production routes hide demo entries and the production build
+   * gate blocks while demo entries remain.
+   */
+  isDemo?: boolean;
 }
 
-export type FeedbackType =
-  | "bug"
-  | "existing-feature-issue"
-  | "feature-suggestion";
+export type FeedbackType = "bug" | "existing-feature-issue" | "feature-suggestion";
 
 export type PublicFeedbackStatus = "accepted" | "in-progress" | "fulfilled";
 
@@ -84,6 +93,9 @@ export interface PublicFeedbackItem {
    * in src/content/updates.ts. Validation enforces this.
    */
   releasedInUpdateSlug?: string;
+  /** Demo-only roadmap content, or a local browser-only submission. */
+  isDemo?: boolean;
+  isLocal?: boolean;
 }
 
 export const FEEDBACK_TYPE_LABEL: Record<FeedbackType, string> = {

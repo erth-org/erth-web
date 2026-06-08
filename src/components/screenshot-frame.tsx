@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { withBasePath } from "@/lib/asset-path";
 
 interface Props {
   src: string | null;
@@ -32,7 +33,7 @@ export function ScreenshotFrame({
     >
       {src ? (
         <img
-          src={src}
+          src={withBasePath(src)}
           alt={alt}
           loading={loading}
           decoding="async"
@@ -44,9 +45,7 @@ export function ScreenshotFrame({
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
               Screenshot pending
             </p>
-            <p className="mt-1 max-w-xs px-6 text-xs text-muted-foreground/60">
-              {alt}
-            </p>
+            <p className="mt-1 max-w-xs px-6 text-xs text-muted-foreground/60">{alt}</p>
           </div>
         </div>
       )}

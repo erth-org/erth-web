@@ -9,15 +9,8 @@ import { cn } from "@/lib/utils";
  *   "Coming soon" state (no link, no button, no href="#", no fake roles)
  *   carrying an accessible label.
  */
-function Badge({
-  store,
-  url,
-}: {
-  store: "App Store" | "Google Play";
-  url: string | null;
-}) {
-  const base =
-    "flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors";
+function Badge({ store, url }: { store: "App Store" | "Google Play"; url: string | null }) {
+  const base = "flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors";
 
   if (url) {
     return (
@@ -43,9 +36,7 @@ function Badge({
     >
       <span className="flex flex-col">
         <span className="text-xs text-muted-foreground">{store}</span>
-        <span className="text-sm font-medium text-muted-foreground">
-          Coming soon
-        </span>
+        <span className="text-sm font-medium text-muted-foreground">Coming soon</span>
       </span>
     </div>
   );

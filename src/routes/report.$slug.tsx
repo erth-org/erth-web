@@ -8,6 +8,13 @@ import { getReleaseBySlug } from "@/content/updates";
 import { siteConfig } from "@/lib/site-config";
 import { FEEDBACK_TYPE_LABEL } from "@/lib/public-content-types";
 
+const ROADMAP_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
 export const Route = createFileRoute("/report/$slug")({
   loader: ({ params }): import("@/lib/public-content-types").PublicFeedbackItem => {
     const item = getFeedbackBySlug(params.slug);
@@ -16,12 +23,8 @@ export const Route = createFileRoute("/report/$slug")({
   },
   head: ({ loaderData }) =>
     buildPageHead({
-      title: loaderData
-        ? `${loaderData.title} · Erth public feedback`
-        : "Feedback — Erth",
-      description:
-        loaderData?.publicDescription ??
-        "A public feedback item on the Erth roadmap.",
+      title: loaderData ? `${loaderData.title} — Erth` : "Feedback — Erth",
+      description: loaderData?.publicDescription ?? "A public feedback item on the Erth roadmap.",
       path: `/report/${loaderData?.slug ?? ""}`,
     }),
   component: FeedbackDetail,
@@ -36,8 +39,7 @@ function FeedbackDetail() {
       ? getReleaseBySlug(item.releasedInUpdateSlug)
       : undefined;
   const votingInteractive =
-    siteConfig.feedback.votingEnabled &&
-    Boolean(siteConfig.feedback.votingEndpoint);
+    siteConfig.feedback.votingEnabled && Boolean(siteConfig.feedback.votingEndpoint);
 
   return (
     <article className="mx-auto max-w-3xl px-4 pt-16 pb-24 sm:pt-24">
@@ -71,12 +73,7 @@ function FeedbackDetail() {
             )}
           </span>
           <time dateTime={item.submissionDate}>
-            Submitted{" "}
-            {new Date(item.submissionDate).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
+            Submitted {formatRoadmapDate(item.submissionDate)}
           </time>
         </div>
       </Reveal>
@@ -140,15 +137,15 @@ function FeedbackDetail() {
   );
 }
 
+function formatRoadmapDate(date: string) {
+  return ROADMAP_DATE_FORMATTER.format(new Date(`${date}T00:00:00.000Z`));
+}
+
 function NotFoundView() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-      <h1 className="text-2xl font-semibold text-foreground">
-        Feedback item not found
-      </h1>
-      <p className="mt-2 text-muted-foreground">
-        That entry doesn't exist or isn't public.
-      </p>
+      <h1 className="text-2xl font-semibold text-foreground">Feedback item not found</h1>
+      <p className="mt-2 text-muted-foreground">That entry doesn't exist or isn't public.</p>
       <Link
         to="/report"
         className="mt-6 inline-flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"

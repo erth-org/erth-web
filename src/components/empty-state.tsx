@@ -18,9 +18,7 @@ export function EmptyState({
     >
       <p className="text-base font-medium text-foreground">{title}</p>
       {description && (
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          {description}
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
       )}
     </div>
   );

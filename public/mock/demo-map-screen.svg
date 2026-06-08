@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Demo personal map screen</title>
+  <desc id="desc">Mock layout artwork for reviewing a dark map interface.</desc>
+  <rect width="1200" height="750" fill="#08080d"/>
+  <g opacity=".35" stroke="#343444" stroke-width="2">
+    <path d="M0 160 C220 120 360 220 560 170 S960 80 1200 140"/>
+    <path d="M0 450 C230 510 420 380 640 450 S980 590 1200 520"/>
+    <path d="M210 0 C260 180 210 310 300 470 S400 610 360 750"/>
+    <path d="M760 0 C680 190 840 330 790 510 S710 640 780 750"/>
+  </g>
+  <g>
+    <circle cx="320" cy="265" r="16" fill="#ff7a1a"/>
+    <circle cx="320" cy="265" r="34" fill="#ff7a1a" opacity=".15"/>
+    <circle cx="690" cy="410" r="16" fill="#d95bff"/>
+    <circle cx="690" cy="410" r="34" fill="#d95bff" opacity=".15"/>
+    <circle cx="895" cy="245" r="16" fill="#3292ff"/>
+    <circle cx="895" cy="245" r="34" fill="#3292ff" opacity=".15"/>
+  </g>
+  <rect x="70" y="58" width="320" height="76" rx="18" fill="#151520" stroke="#2b2b37"/>
+  <text x="100" y="105" fill="#f6f3ef" font-family="Arial, sans-serif" font-size="28" font-weight="700">[Demo] Saved places</text>
+  <rect x="820" y="520" width="300" height="150" rx="24" fill="#12121c" stroke="#2b2b37"/>
+  <text x="852" y="570" fill="#ff7a1a" font-family="Arial, sans-serif" font-size="20" font-weight="700">Demo content</text>
+  <text x="852" y="612" fill="#aaa4b2" font-family="Arial, sans-serif" font-size="24">3 memories nearby</text>
+</svg>

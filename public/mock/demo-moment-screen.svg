@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Demo moment detail screen</title>
+  <desc id="desc">Mock layout artwork for reviewing a place-based memory detail.</desc>
+  <rect width="1200" height="750" fill="#09090f"/>
+  <rect x="80" y="70" width="460" height="610" rx="36" fill="#141420" stroke="#2a2a36"/>
+  <rect x="118" y="112" width="384" height="260" rx="28" fill="#23151c"/>
+  <circle cx="310" cy="242" r="76" fill="#ff7a1a" opacity=".85"/>
+  <path d="M180 420h260M180 470h310M180 520h230" stroke="#f3eee8" stroke-width="24" stroke-linecap="round" opacity=".78"/>
+  <path d="M650 150h300M650 210h420M650 270h360" stroke="#aaa4b2" stroke-width="22" stroke-linecap="round" opacity=".7"/>
+  <rect x="650" y="360" width="420" height="190" rx="28" fill="#12121c" stroke="#2b2b37"/>
+  <text x="690" y="430" fill="#ff7a1a" font-family="Arial, sans-serif" font-size="24" font-weight="700">[Demo] Place context</text>
+  <text x="690" y="482" fill="#f6f3ef" font-family="Arial, sans-serif" font-size="30">Harbor walk</text>
+</svg>

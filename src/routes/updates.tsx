@@ -11,12 +11,18 @@ import { releases } from "@/content/updates";
 import { type Platform } from "@/lib/public-content-types";
 import { cn } from "@/lib/utils";
 
+const RELEASE_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
 export const Route = createFileRoute("/updates")({
   head: () =>
     buildPageHead({
-      title: "Updates — Erth release notes",
-      description:
-        "Verified Erth releases, improvements, and bug fixes — straight from the team.",
+      title: "Updates — Erth",
+      description: "Verified Erth releases, improvements, and bug fixes — straight from the team.",
       path: "/updates",
     }),
   component: UpdatesPage,
@@ -27,20 +33,21 @@ type PlatformFilter = "all" | Platform;
 function UpdatesPage() {
   const [platform, setPlatform] = useState<PlatformFilter>("all");
   const [query, setQuery] = useState("");
+  const visibleReleases = useMemo(
+    () => (import.meta.env.DEV ? releases : releases.filter((r) => !r.isDemo)),
+    [],
+  );
 
   // Only show platform filters that have data behind them.
   const availablePlatforms = useMemo(() => {
     const s = new Set<Platform>();
-    releases.forEach((r) => r.platforms.forEach((p) => s.add(p)));
+    visibleReleases.forEach((r) => r.platforms.forEach((p) => s.add(p)));
     return Array.from(s);
-  }, []);
+  }, [visibleReleases]);
 
   const sorted = useMemo(
-    () =>
-      [...releases].sort(
-        (a, b) => +new Date(b.releaseDate) - +new Date(a.releaseDate),
-      ),
-    [],
+    () => [...visibleReleases].sort((a, b) => +new Date(b.releaseDate) - +new Date(a.releaseDate)),
+    [visibleReleases],
   );
 
   const filtered = useMemo(() => {
@@ -71,24 +78,20 @@ function UpdatesPage() {
         <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 sm:pt-28">
           <Reveal className="space-y-5">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
-              Erth · Release notes
+              Release notes
             </p>
             <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
               Updates
             </h1>
             <p className="text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-              A running log of verified Erth releases, improvements, and fixes —
-              straight from the team.
+              A running log of verified releases, improvements, and fixes from the team.
             </p>
           </Reveal>
         </div>
       </section>
 
-      {releases.length > 0 && (
-        <section
-          aria-label="Filter releases"
-          className="mx-auto max-w-3xl px-4 pb-6"
-        >
+      {visibleReleases.length > 0 && (
+        <section aria-label="Filter releases" className="mx-auto max-w-3xl px-4 pb-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full sm:max-w-xs">
               <Search
@@ -133,10 +136,10 @@ function UpdatesPage() {
       )}
 
       <section className="mx-auto max-w-3xl px-4 pb-24">
-        {releases.length === 0 ? (
+        {visibleReleases.length === 0 ? (
           <EmptyState
             title="No releases yet."
-            description="Release notes will appear here when the next Erth version is published."
+            description="Release notes will appear here when the next version is published."
           />
         ) : filtered.length === 0 ? (
           <EmptyState
@@ -146,7 +149,7 @@ function UpdatesPage() {
         ) : (
           <ol
             className="relative space-y-12 border-l border-border/60 pl-6"
-            aria-label="Erth releases, newest first"
+            aria-label="Releases, newest first"
           >
             {filtered.map((r) => (
               <li key={r.slug} className="relative">
@@ -200,13 +203,8 @@ function ReleasePreview({ release: r }: { release: (typeof releases)[number] }) 
   return (
     <article className="space-y-4">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="font-mono text-sm font-semibold text-foreground">
-          {r.version}
-        </span>
-        <time
-          dateTime={r.releaseDate}
-          className="font-mono text-xs text-muted-foreground"
-        >
+        <span className="font-mono text-sm font-semibold text-foreground">{r.version}</span>
+        <time dateTime={r.releaseDate} className="font-mono text-xs text-muted-foreground">
           {formatDate(r.releaseDate)}
         </time>
         <PlatformBadges platforms={r.platforms} className="ml-auto" />
@@ -220,30 +218,27 @@ function ReleasePreview({ release: r }: { release: (typeof releases)[number] }) 
           {r.title}
         </h2>
       </Link>
-      <p className="text-base leading-relaxed text-muted-foreground">
-        {r.summary}
-      </p>
+      <p className="text-base leading-relaxed text-muted-foreground">{r.summary}</p>
+      {r.isDemo && (
+        <p className="inline-flex w-fit rounded-full border border-primary/35 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary">
+          Demo content — not published information
+        </p>
+      )}
       {r.majorFeature && (
         <div className="rounded-xl border border-border bg-card/40 p-4">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-primary">
             Major feature
           </p>
-          <p className="mt-1 text-base font-medium text-foreground">
-            {r.majorFeature.title}
-          </p>
+          <p className="mt-1 text-base font-medium text-foreground">{r.majorFeature.title}</p>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
             {r.majorFeature.description}
           </p>
         </div>
       )}
-      {r.heroImageSrc && (
-        <ScreenshotFrame src={r.heroImageSrc} alt={r.heroImageAlt} />
-      )}
+      {r.heroImageSrc && <ScreenshotFrame src={r.heroImageSrc} alt={r.heroImageAlt} />}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         {counts.newFeatures > 0 && <span>{counts.newFeatures} new</span>}
-        {counts.improvements > 0 && (
-          <span>{counts.improvements} improved</span>
-        )}
+        {counts.improvements > 0 && <span>{counts.improvements} improved</span>}
         {counts.bugFixes > 0 && <span>{counts.bugFixes} fixed</span>}
         <Link
           to="/updates/$slug"
@@ -259,11 +254,7 @@ function ReleasePreview({ release: r }: { release: (typeof releases)[number] }) 
 }
 
 function formatDate(iso: string) {
-  const d = new Date(iso);
+  const d = new Date(`${iso}T00:00:00.000Z`);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  return RELEASE_DATE_FORMATTER.format(d);
 }

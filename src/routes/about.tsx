@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
-import { siteConfig, getPublishableTeam } from "@/lib/site-config";
+import { siteConfig, type TeamMember } from "@/lib/site-config";
 import { Reveal } from "@/components/reveal";
 import { StarBackdrop } from "@/components/star-backdrop";
 import { TeamMemberCard } from "@/components/team-member-card";
@@ -8,7 +8,7 @@ import { TeamMemberCard } from "@/components/team-member-card";
 export const Route = createFileRoute("/about")({
   head: () =>
     buildPageHead({
-      title: "About Erth — Why we are building it",
+      title: "About — Erth",
       description:
         "Erth is building a calm, lasting home for the places and moments that shape your world. Learn about the vision and the team behind it.",
       path: "/about",
@@ -31,10 +31,48 @@ const principles = [
   },
 ];
 
+const mockTeam: TeamMember[] = [
+  {
+    name: "[Demo] Ava Marin",
+    role: "Product & Story",
+    bio: "Mock profile for reviewing how founder and product narrative cards appear on the About page.",
+    photoUrl: "mock/demo-team-ava.svg",
+    linkedinUrl: null,
+  },
+  {
+    name: "[Demo] Milo Chen",
+    role: "Mobile Engineering",
+    bio: "Mock profile for reviewing technical leadership content and portrait rendering.",
+    photoUrl: "mock/demo-team-milo.svg",
+    linkedinUrl: null,
+  },
+  {
+    name: "[Demo] Rhea Sol",
+    role: "Design Systems",
+    bio: "Mock profile for reviewing visual-design and UX content density across breakpoints.",
+    photoUrl: "mock/demo-team-rhea.svg",
+    linkedinUrl: null,
+  },
+];
+
+const mockMilestones = [
+  {
+    label: "[Demo] Product thesis",
+    detail: "Defined the map-first memory model and privacy-first sharing principles.",
+  },
+  {
+    label: "[Demo] Prototype review",
+    detail:
+      "Validated navigation, saved-place cards, and moment detail hierarchy with mock screens.",
+  },
+  {
+    label: "[Demo] Early roadmap",
+    detail: "Prioritized offline capture, selective sharing, and long-term revisiting flows.",
+  },
+];
+
 function AboutPage() {
-  // In production, only real team members are shown; placeholders are dropped.
-  // In development, placeholder cards demonstrate the intended layout.
-  const team = import.meta.env.DEV ? siteConfig.team : getPublishableTeam();
+  const team = import.meta.env.DEV ? mockTeam : [];
 
   return (
     <>
@@ -43,26 +81,23 @@ function AboutPage() {
         <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 sm:pt-28">
           <Reveal className="space-y-6">
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              About Erth
+              About
             </h1>
             <p className="text-base leading-relaxed text-muted-foreground">
-              Erth exists because the moments and places that define a life
-              deserve a lasting home — not a feed that forgets them the moment you
-              scroll past.
+              Erth exists because the moments and places that define a life deserve a lasting home —
+              not a feed that forgets them the moment you scroll past.
             </p>
             <p className="text-base leading-relaxed text-muted-foreground">
               {siteConfig.visionStatement}
             </p>
             <p className="text-base leading-relaxed text-muted-foreground">
-              Our long-term ambition is for Erth to become the place people turn
-              to when they want to see the shape of their own experiences across
-              the world — and to do it with care, clarity, and respect for the
-              people who use it.
+              Our long-term ambition is for Erth to become the place people turn to when they want
+              to see the shape of their own experiences across the world — and to do it with care,
+              clarity, and respect for the people who use it.
             </p>
           </Reveal>
         </div>
       </section>
-
 
       <section className="border-t border-border/60 bg-card/30">
         <div className="mx-auto max-w-6xl px-4 py-16">
@@ -78,15 +113,37 @@ function AboutPage() {
                 delayMs={i * 80}
                 className="rounded-2xl border border-border bg-card p-6"
               >
-                <h3 className="text-lg font-semibold text-foreground">
-                  {p.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {p.body}
-                </p>
+                <h3 className="text-lg font-semibold text-foreground">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <Reveal className="mb-8 max-w-2xl">
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            Demo milestones
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Mock content for reviewing roadmap-style About page density. Replace before production.
+          </p>
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-3">
+          {mockMilestones.map((item, i) => (
+            <Reveal
+              key={item.label}
+              delayMs={i * 70}
+              className="rounded-2xl border border-border bg-card p-5"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-wider text-primary">
+                {String(i + 1).padStart(2, "0")}
+              </p>
+              <h3 className="mt-3 text-base font-semibold text-foreground">{item.label}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.detail}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
@@ -100,27 +157,7 @@ function AboutPage() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {team.map((member, i) => (
               <Reveal key={i} delayMs={i * 70}>
-                <TeamMemberCard
-                  member={
-                    import.meta.env.DEV
-                      ? {
-                          ...member,
-                          name:
-                            member.name === "__PLACEHOLDER__"
-                              ? "[Team member name]"
-                              : member.name,
-                          role:
-                            member.role === "__PLACEHOLDER__"
-                              ? "[Role]"
-                              : member.role,
-                          bio:
-                            member.bio === "__PLACEHOLDER__"
-                              ? "[Short bio — placeholder shown in development only.]"
-                              : member.bio,
-                        }
-                      : member
-                  }
-                />
+                <TeamMemberCard member={member} />
               </Reveal>
             ))}
           </div>

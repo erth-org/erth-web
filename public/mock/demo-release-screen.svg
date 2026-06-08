@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Demo release visual</title>
+  <desc id="desc">Mock release artwork for reviewing update cards.</desc>
+  <rect width="1200" height="750" fill="#09090f"/>
+  <rect x="90" y="90" width="1020" height="570" rx="40" fill="#12121d" stroke="#2c2c38"/>
+  <text x="150" y="175" fill="#ff7a1a" font-family="Arial, sans-serif" font-size="26" font-weight="700">Demo release visual</text>
+  <text x="150" y="245" fill="#f6f3ef" font-family="Arial, sans-serif" font-size="48" font-weight="700">Map polish preview</text>
+  <g opacity=".85">
+    <circle cx="760" cy="380" r="150" fill="none" stroke="#343444" stroke-width="3"/>
+    <ellipse cx="760" cy="380" rx="150" ry="58" fill="none" stroke="#343444" stroke-width="3"/>
+    <ellipse cx="760" cy="380" rx="58" ry="150" fill="none" stroke="#343444" stroke-width="3"/>
+    <path d="M640 405Q740 290 880 355" fill="none" stroke="#ff7a1a" stroke-width="8" stroke-linecap="round"/>
+    <path d="M670 470Q770 540 900 430" fill="none" stroke="#d95bff" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <path d="M150 330h300M150 390h390M150 450h250" stroke="#aaa4b2" stroke-width="22" stroke-linecap="round" opacity=".75"/>
+</svg>

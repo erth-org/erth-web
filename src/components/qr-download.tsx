@@ -28,9 +28,7 @@ export function QrDownload({ className }: { className?: string }) {
           className="flex size-40 items-center justify-center rounded-xl border border-dashed border-border bg-background"
           role="img"
           aria-label={
-            downloadUrl
-              ? "QR code linking to the Erth app download page"
-              : "QR code coming soon"
+            downloadUrl ? "QR code linking to the app download page" : "QR code coming soon"
           }
         >
           <div className="flex flex-col items-center gap-2 text-center">
@@ -52,13 +50,11 @@ export function QrDownload({ className }: { className?: string }) {
 
       <div className="space-y-4">
         <div>
-          <h3 className="text-lg font-semibold text-foreground">
-            Get the Erth app
-          </h3>
+          <h3 className="text-lg font-semibold text-foreground">Get the app</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             {downloadUrl
               ? "Scan the code or use a store link below to get started."
-              : "Store links are on the way. Check back soon to download Erth."}
+              : "Store links are on the way. Check back soon to download the app."}
           </p>
         </div>
         <AppStoreBadges />

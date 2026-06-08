@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Demo team portrait</title>
+  <rect width="256" height="256" fill="#11111b"/>
+  <circle cx="128" cy="96" r="46" fill="#ff7a1a"/>
+  <path d="M52 226c12-52 44-78 76-78s64 26 76 78" fill="#2a2a38"/>
+</svg>

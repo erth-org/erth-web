@@ -1,58 +1,93 @@
 import type { Feature } from "@/lib/public-content-types";
 
 /**
- * Foundational Erth capabilities.
+ * Foundational capabilities.
  *
- * Mark `verified: true` ONLY after the copy AND screenshot have been
- * confirmed against the live Erth application. Production hides any
- * entry where `verified === false`, so the page renders an honest empty
- * state until verified entries exist.
+ * DEMO CONTENT POLICY:
+ * - Entries marked `isDemo: true` are mock data for layout review only.
+ * - Production routes hide demo entries.
+ * - The production build gate blocks while demo entries remain.
  *
- * Aim for ~6 entries when complete. Do NOT invent claims.
+ * Replace demo entries with verified real content before launch. Mark
+ * `verified: true` ONLY after the copy and screenshot have been confirmed
+ * against the live application.
  */
 export const features: Feature[] = [
   {
     id: "living-personal-map",
-    title: "A living personal map",
-    summary: "Pin the places that matter to you.",
+    title: "[Demo] A living personal map",
+    summary:
+      "A calm map surface for saving meaningful places, memories, and context without turning them into a public feed.",
     benefit:
-      "Erth gives every person a private, evolving map of the places they care about — somewhere to keep moments anchored in the world they happened in.",
-    screenshotSrc: null,
-    screenshotAlt: "Erth personal map view",
+      "Gives each person a private, evolving view of the places they care about, with enough structure to revisit moments months or years later.",
+    screenshotSrc: "mock/demo-map-screen.svg",
+    screenshotAlt: "Demo personal map view layout",
     platforms: ["ios", "android"],
     verified: false,
+    isDemo: true,
   },
   {
     id: "moments-tied-to-place",
-    title: "Moments tied to place",
-    summary: "Capture experiences in the context they happened.",
+    title: "[Demo] Moments tied to place",
+    summary:
+      "Capture notes, photos, and memory details in the location context where they happened.",
     benefit:
-      "Each entry lives where it happened. Photos, notes, and memories are linked to a real location so they keep their meaning long after the moment passes.",
-    screenshotSrc: null,
-    screenshotAlt: "An Erth moment pinned to a location",
+      "Keeps the meaning around a memory intact by connecting it to the real-world setting, not just a timestamp.",
+    screenshotSrc: "mock/demo-moment-screen.svg",
+    screenshotAlt: "Demo place-based moment detail layout",
     platforms: ["ios", "android"],
     verified: false,
+    isDemo: true,
   },
   {
     id: "you-own-your-story",
-    title: "You own your story",
-    summary: "Quiet by default, sharable on your terms.",
+    title: "[Demo] Private by default",
+    summary: "Keep personal entries quiet, then choose what to share only when sharing adds value.",
     benefit:
-      "Your map is yours. Erth gives you control over what stays private, what you share with people you trust, and what — if anything — is ever public.",
-    screenshotSrc: null,
-    screenshotAlt: "Erth privacy and sharing controls",
+      "Supports a reflective experience where ownership and consent are clear before anything becomes visible to someone else.",
+    screenshotSrc: "mock/demo-sharing-screen.svg",
+    screenshotAlt: "Demo privacy and sharing controls layout",
     platforms: ["ios", "android"],
     verified: false,
+    isDemo: true,
   },
   {
     id: "built-for-the-long-term",
-    title: "Built for the long term",
-    summary: "A footprint worth revisiting years from now.",
+    title: "[Demo] Built for the long term",
+    summary:
+      "A lasting archive that rewards returning to past places instead of chasing constant posting.",
     benefit:
-      "Erth is designed to be a place you return to — not a feed that forgets. Its calm pace and clear structure reward looking back as much as adding new moments.",
-    screenshotSrc: null,
-    screenshotAlt: "Erth long-form timeline view",
+      "Creates a digital footprint that stays useful as it grows, with a calmer pace and clearer structure than a disposable timeline.",
+    screenshotSrc: "mock/demo-map-screen.svg",
+    screenshotAlt: "Demo long-term memory archive layout",
     platforms: ["ios", "android"],
     verified: false,
+    isDemo: true,
+  },
+  {
+    id: "review-ready-sharing",
+    title: "[Demo] Thoughtful sharing controls",
+    summary:
+      "Share selected places or collections with trusted people while keeping the broader map private.",
+    benefit:
+      "Makes collaboration and discovery possible without forcing every memory into a public broadcast model.",
+    screenshotSrc: "mock/demo-sharing-screen.svg",
+    screenshotAlt: "Demo selective sharing layout",
+    platforms: ["ios", "android", "web"],
+    verified: false,
+    isDemo: true,
+  },
+  {
+    id: "context-rich-revisiting",
+    title: "[Demo] Context-rich revisiting",
+    summary:
+      "Surface older moments through place, time, and personal meaning so returning to the map feels useful.",
+    benefit:
+      "Helps people rediscover patterns in where they have been and what mattered without needing to remember exact dates.",
+    screenshotSrc: "mock/demo-moment-screen.svg",
+    screenshotAlt: "Demo memory revisiting layout",
+    platforms: ["ios", "android"],
+    verified: false,
+    isDemo: true,
   },
 ];

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Demo sharing controls screen</title>
+  <desc id="desc">Mock layout artwork for reviewing selective sharing controls.</desc>
+  <rect width="1200" height="750" fill="#08080d"/>
+  <rect x="120" y="90" width="960" height="560" rx="36" fill="#13131d" stroke="#2c2c38"/>
+  <text x="170" y="165" fill="#f6f3ef" font-family="Arial, sans-serif" font-size="38" font-weight="700">[Demo] Share collection</text>
+  <g fill="#1b1b27" stroke="#343442">
+    <rect x="170" y="220" width="390" height="110" rx="22"/>
+    <rect x="170" y="360" width="390" height="110" rx="22"/>
+    <rect x="640" y="220" width="270" height="270" rx="28"/>
+  </g>
+  <circle cx="220" cy="275" r="24" fill="#ff7a1a"/>
+  <circle cx="220" cy="415" r="24" fill="#d95bff"/>
+  <path d="M270 265h210M270 305h140M270 405h220M270 445h160" stroke="#aaa4b2" stroke-width="16" stroke-linecap="round"/>
+  <path d="M725 330h100M775 280v100" stroke="#ff7a1a" stroke-width="22" stroke-linecap="round"/>
+</svg>
