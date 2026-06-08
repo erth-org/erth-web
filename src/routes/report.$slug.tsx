@@ -42,7 +42,7 @@ function FeedbackDetail() {
     siteConfig.feedback.votingEnabled && Boolean(siteConfig.feedback.votingEndpoint);
 
   return (
-    <article className="mx-auto max-w-3xl px-4 pt-16 pb-24 sm:pt-24">
+    <article className="mx-auto max-w-3xl px-4 pt-10 pb-16 sm:pt-24 sm:pb-24">
       <Link
         to="/report"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -58,17 +58,18 @@ function FeedbackDetail() {
             {FEEDBACK_TYPE_LABEL[item.type]} · {item.category}
           </span>
         </div>
-        <h1 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
+        <h1 className="text-balance text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
           {item.title}
         </h1>
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground sm:gap-4">
           <span className="inline-flex items-center gap-1.5">
             <ThumbsUp className="size-4" aria-hidden="true" />
             <span className="font-medium text-foreground">{item.voteCount}</span>
             <span>votes</span>
             {!votingInteractive && (
               <span className="ml-2 rounded-full border border-border bg-background px-2 py-0.5 text-[10px] uppercase tracking-wider">
-                Read only
+                <span className="sm:hidden">Read</span>
+                <span className="hidden sm:inline">Read only</span>
               </span>
             )}
           </span>
@@ -83,18 +84,18 @@ function FeedbackDetail() {
           <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-foreground">
             Description
           </h2>
-          <p className="mt-3 whitespace-pre-line text-base leading-relaxed text-muted-foreground">
+          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted-foreground sm:text-base">
             {item.publicDescription}
           </p>
         </Reveal>
       )}
 
       {item.latestOfficialResponse && (
-        <Reveal className="mt-8 rounded-2xl border-l-2 border-primary/60 bg-card/40 p-5">
+        <Reveal className="mt-8 rounded-xl border-l-2 border-primary/60 bg-card/40 p-4 sm:rounded-2xl sm:p-5">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-primary">
             Latest official response
           </p>
-          <p className="mt-2 whitespace-pre-line text-base leading-relaxed text-foreground/90">
+          <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/90 sm:text-base">
             {item.latestOfficialResponse}
           </p>
         </Reveal>
@@ -105,7 +106,7 @@ function FeedbackDetail() {
           <Link
             to="/updates/$slug"
             params={{ slug: release.slug }}
-            className="group flex items-center justify-between gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 transition-colors hover:border-emerald-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group flex items-center justify-between gap-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 transition-colors hover:border-emerald-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:rounded-2xl sm:p-5"
           >
             <div>
               <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-emerald-300">
@@ -114,7 +115,7 @@ function FeedbackDetail() {
               <p className="mt-1 text-base font-medium text-foreground">
                 View the release where this shipped
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">{release.title}</p>
+              <p className="mt-1 hidden text-sm text-muted-foreground sm:block">{release.title}</p>
             </div>
             <ArrowRight
               className="size-5 shrink-0 text-emerald-300 transition-transform group-hover:translate-x-0.5"

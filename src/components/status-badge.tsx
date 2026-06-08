@@ -13,6 +13,12 @@ const DOT: Record<PublicFeedbackStatus, string> = {
   fulfilled: "bg-emerald-400",
 };
 
+const COMPACT_LABEL: Record<PublicFeedbackStatus, string> = {
+  accepted: "Open",
+  "in-progress": "Doing",
+  fulfilled: "Done",
+};
+
 export function StatusBadge({
   status,
   className,
@@ -22,6 +28,7 @@ export function StatusBadge({
 }) {
   return (
     <span
+      aria-label={FEEDBACK_STATUS_LABEL[status]}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium",
         STYLES[status],
@@ -29,7 +36,10 @@ export function StatusBadge({
       )}
     >
       <span aria-hidden="true" className={cn("size-1.5 rounded-full", DOT[status])} />
-      {FEEDBACK_STATUS_LABEL[status]}
+      <span aria-hidden="true" className="sm:hidden">
+        {COMPACT_LABEL[status]}
+      </span>
+      <span className="hidden sm:inline">{FEEDBACK_STATUS_LABEL[status]}</span>
     </span>
   );
 }

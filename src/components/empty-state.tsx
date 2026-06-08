@@ -12,7 +12,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "mx-auto max-w-xl rounded-2xl border border-dashed border-border bg-card/40 p-10 text-center",
+        "mx-auto max-w-xl rounded-xl border border-dashed border-border bg-card/40 p-6 text-center sm:rounded-2xl sm:p-10",
         className,
       )}
     >

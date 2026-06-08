@@ -1,16 +1,32 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import {
+  Download,
+  FileText,
+  Flag,
+  Home,
+  Info,
+  Mail,
+  Menu,
+  Newspaper,
+  Sparkles,
+} from "lucide-react";
 import { ErthLogo } from "@/components/erth-logo";
-import { cn } from "@/lib/utils";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const primaryNav = [
-  { label: "Features", to: "/features" as const },
-  { label: "Updates", to: "/updates" as const },
-  { label: "About", to: "/about" as const },
-  { label: "Report", to: "/report" as const },
-  { label: "Contact", to: "/contact" as const },
-  { label: "Legal", to: "/legal" as const },
+  { label: "Features", to: "/features" as const, icon: Sparkles },
+  { label: "Updates", to: "/updates" as const, icon: Newspaper },
+  { label: "About", to: "/about" as const, icon: Info },
+  { label: "Report", to: "/report" as const, icon: Flag },
+  { label: "Contact", to: "/contact" as const, icon: Mail },
+  { label: "Legal", to: "/legal" as const, icon: FileText },
 ];
 
 export function SiteHeader() {
@@ -56,50 +72,65 @@ export function SiteHeader() {
           className="inline-flex size-11 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
+          aria-label="Open menu"
+          onClick={() => setOpen(true)}
         >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          <Menu className="size-5" />
         </button>
       </div>
 
-      <div
-        id="mobile-nav"
-        className={cn("border-t border-border/60 lg:hidden", open ? "block" : "hidden")}
-      >
-        <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3" aria-label="Mobile">
-          <Link
-            to="/"
-            activeProps={{ className: "text-foreground", "aria-current": "page" }}
-            inactiveProps={{ className: "text-muted-foreground" }}
-            activeOptions={{ exact: true }}
-            onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            Home
-          </Link>
-          {primaryNav.map((item) => (
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent
+          id="mobile-nav"
+          side="right"
+          className="flex h-dvh w-[86vw] max-w-sm flex-col overflow-y-auto border-border/70 bg-background/92 px-5 py-5 shadow-2xl supports-[backdrop-filter]:bg-background/82 lg:hidden"
+        >
+          <SheetHeader className="mb-4 pr-8 text-left">
+            <SheetTitle className="sr-only">Site menu</SheetTitle>
+            <SheetDescription className="sr-only">
+              Primary Erth website navigation links.
+            </SheetDescription>
+            <ErthLogo />
+          </SheetHeader>
+
+          <nav className="flex flex-1 flex-col gap-1" aria-label="Mobile">
             <Link
-              key={item.to}
-              to={item.to}
+              to="/"
               activeProps={{ className: "text-foreground", "aria-current": "page" }}
               inactiveProps={{ className: "text-muted-foreground" }}
+              activeOptions={{ exact: true }}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex min-h-12 items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors hover:bg-card hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {item.label}
+              <Home className="size-4 shrink-0 text-primary" aria-hidden="true" />
+              Home
             </Link>
-          ))}
+            {primaryNav.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                activeProps={{ className: "text-foreground", "aria-current": "page" }}
+                inactiveProps={{ className: "text-muted-foreground" }}
+                onClick={() => setOpen(false)}
+                className="inline-flex min-h-12 items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors hover:bg-card hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <item.icon className="size-4 shrink-0 text-primary" aria-hidden="true" />
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
           <Link
             to="/"
             hash="download"
             onClick={() => setOpen(false)}
-            className="mt-2 inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
+            <Download className="size-4" aria-hidden="true" />
             Download
           </Link>
-        </nav>
-      </div>
+        </SheetContent>
+      </Sheet>
     </header>
   );
 }

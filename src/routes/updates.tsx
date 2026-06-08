@@ -75,15 +75,15 @@ function UpdatesPage() {
     <>
       <section className="relative overflow-hidden">
         <StarBackdrop />
-        <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 sm:pt-28">
-          <Reveal className="space-y-5">
+        <div className="relative mx-auto max-w-3xl px-4 pt-12 pb-10 sm:pt-28 sm:pb-12">
+          <Reveal className="space-y-4 sm:space-y-5">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
               Release notes
             </p>
-            <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            <h1 className="text-balance text-[2.35rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
               Updates
             </h1>
-            <p className="text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
               A running log of verified releases, improvements, and fixes from the team.
             </p>
           </Reveal>
@@ -114,7 +114,7 @@ function UpdatesPage() {
               <div
                 role="tablist"
                 aria-label="Platform"
-                className="flex flex-wrap items-center gap-1 rounded-md border border-border bg-card/40 p-1"
+                className="grid grid-cols-4 gap-1 rounded-md border border-border bg-card/40 p-1 sm:flex sm:flex-wrap sm:items-center"
               >
                 <FilterChip
                   active={platform === "all"}
@@ -135,7 +135,7 @@ function UpdatesPage() {
         </section>
       )}
 
-      <section className="mx-auto max-w-3xl px-4 pb-24">
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:pb-24">
         {visibleReleases.length === 0 ? (
           <EmptyState
             title="No releases yet."
@@ -148,7 +148,7 @@ function UpdatesPage() {
           />
         ) : (
           <ol
-            className="relative space-y-12 border-l border-border/60 pl-6"
+            className="relative space-y-9 border-l border-border/60 pl-5 sm:space-y-12 sm:pl-6"
             aria-label="Releases, newest first"
           >
             {filtered.map((r) => (
@@ -214,11 +214,13 @@ function ReleasePreview({ release: r }: { release: (typeof releases)[number] }) 
         params={{ slug: r.slug }}
         className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <h2 className="text-2xl font-semibold leading-tight tracking-tight text-foreground transition-colors hover:text-primary">
+        <h2 className="text-xl font-semibold leading-tight tracking-tight text-foreground transition-colors hover:text-primary sm:text-2xl">
           {r.title}
         </h2>
       </Link>
-      <p className="text-base leading-relaxed text-muted-foreground">{r.summary}</p>
+      <p className="erth-mobile-clamp-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+        {r.summary}
+      </p>
       {r.isDemo && (
         <p className="inline-flex w-fit rounded-full border border-primary/35 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary">
           Demo content — not published information
@@ -230,7 +232,7 @@ function ReleasePreview({ release: r }: { release: (typeof releases)[number] }) 
             Major feature
           </p>
           <p className="mt-1 text-base font-medium text-foreground">{r.majorFeature.title}</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-1 hidden text-sm leading-relaxed text-muted-foreground sm:block">
             {r.majorFeature.description}
           </p>
         </div>
@@ -245,7 +247,8 @@ function ReleasePreview({ release: r }: { release: (typeof releases)[number] }) 
           params={{ slug: r.slug }}
           className="ml-auto inline-flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Read release
+          <span className="sm:hidden">Read</span>
+          <span className="hidden sm:inline">Read release</span>
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
       </div>

@@ -116,6 +116,31 @@
   }
 }
 
+@layer utilities {
+  .erth-mobile-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .erth-mobile-clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  @media (min-width: 640px) {
+    .erth-mobile-clamp-2,
+    .erth-mobile-clamp-3 {
+      display: block;
+      -webkit-line-clamp: unset;
+      overflow: visible;
+    }
+  }
+}
+
 /* ---------------------------------------------------------------- */
 /* Star backdrop — lightweight, CSS-only.                           */
 /* Two stacked layers of small radial gradients give the illusion   */

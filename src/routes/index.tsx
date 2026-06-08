@@ -67,28 +67,29 @@ function HomePage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <StarBackdrop />
-        <div className="relative mx-auto max-w-6xl px-4 pt-20 pb-24 sm:pt-28">
-          <div className="grid items-center gap-12 md:grid-cols-[1fr_1.05fr]">
-            <Reveal className="space-y-6">
-              <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+        <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-14 sm:pt-28 sm:pb-24">
+          <div className="grid items-center gap-8 md:grid-cols-[1fr_1.05fr] md:gap-12">
+            <Reveal className="space-y-5 sm:space-y-6">
+              <h1 className="text-balance text-[2.35rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 A living digital map of your world.
               </h1>
-              <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+              <p className="max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
                 Capture meaningful experiences and build a lasting digital footprint of where you
                 have been and what mattered along the way.
               </p>
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="grid gap-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:pt-2">
                 <Link
                   to="/"
                   hash="download"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Download className="size-4" aria-hidden="true" />
-                  Download the app
+                  <span className="sm:hidden">Download</span>
+                  <span className="hidden sm:inline">Download the app</span>
                 </Link>
                 <Link
                   to="/about"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Learn more
                   <ArrowRight className="size-4" aria-hidden="true" />
@@ -96,34 +97,34 @@ function HomePage() {
               </div>
             </Reveal>
 
-            <Reveal delayMs={120} className="flex justify-center text-foreground">
-              <HeroVisual className="w-full max-w-xl lg:max-w-[34rem]" />
+            <Reveal delayMs={120} className="flex justify-center overflow-visible text-foreground">
+              <HeroVisual className="w-[110vw] max-w-none shrink-0 sm:w-full sm:max-w-xl lg:max-w-[34rem]" />
             </Reveal>
           </div>
         </div>
       </section>
 
       <section className="border-t border-border/60 bg-card/20">
-        <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
           <Reveal className="mb-6 max-w-2xl">
             <p className="font-mono text-[10px] uppercase tracking-wider text-primary">
               Demo snapshot — not published information
             </p>
           </Reveal>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {demoSnapshot.map((item, i) => (
               <Reveal
                 key={item.label}
                 delayMs={i * 70}
-                className="rounded-2xl border border-border bg-card p-5"
+                className="rounded-xl border border-border bg-card p-3 sm:rounded-2xl sm:p-5"
               >
-                <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                <p className="erth-mobile-clamp-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground sm:text-[10px]">
                   {item.label}
                 </p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:mt-3 sm:text-3xl">
                   {item.value}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                <p className="mt-1 hidden text-sm text-muted-foreground sm:block">{item.detail}</p>
               </Reveal>
             ))}
           </div>
@@ -132,36 +133,46 @@ function HomePage() {
 
       {/* Our Vision */}
       <section className="border-t border-border/60 bg-card/30">
-        <div className="mx-auto max-w-3xl px-4 py-20">
-          <Reveal className="space-y-6">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
+          <Reveal className="space-y-4 sm:space-y-6">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               Our vision
             </h2>
-            <p className="text-base leading-relaxed text-muted-foreground">{vision.problem}</p>
-            <p className="text-base leading-relaxed text-muted-foreground">{vision.why}</p>
-            <p className="text-base leading-relaxed text-muted-foreground">{vision.future}</p>
-            <p className="text-base leading-relaxed text-muted-foreground">{vision.contribution}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {vision.problem}
+            </p>
+            <p className="hidden text-base leading-relaxed text-muted-foreground sm:block">
+              {vision.why}
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {vision.future}
+            </p>
+            <p className="hidden text-base leading-relaxed text-muted-foreground sm:block">
+              {vision.contribution}
+            </p>
           </Reveal>
         </div>
       </section>
 
       {/* Core Ideas */}
-      <section className="mx-auto max-w-6xl px-4 py-20">
+      <section className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
         <Reveal className="mb-10 max-w-2xl">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             What it's built on
           </h2>
         </Reveal>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-3 md:gap-6">
           {coreIdeas.map((idea, i) => (
             <Reveal
               key={idea.title}
               delayMs={i * 90}
-              className="rounded-2xl border border-border bg-card p-6"
+              className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 sm:block sm:rounded-2xl sm:p-6"
             >
-              <idea.icon className="size-6 text-primary" aria-hidden="true" />
-              <h3 className="mt-4 text-lg font-semibold text-foreground">{idea.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              <idea.icon className="size-5 shrink-0 text-primary sm:size-6" aria-hidden="true" />
+              <h3 className="text-base font-semibold text-foreground sm:mt-4 sm:text-lg">
+                {idea.title}
+              </h3>
+              <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground sm:block">
                 {idea.description}
               </p>
             </Reveal>
@@ -171,7 +182,7 @@ function HomePage() {
 
       {/* Who Erth Is For */}
       <section className="border-t border-border/60 bg-card/30">
-        <div className="mx-auto max-w-6xl px-4 py-20">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
           <Reveal className="mb-10 max-w-2xl">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               Who it's for
@@ -181,17 +192,17 @@ function HomePage() {
               those evaluating where the product is headed.
             </p>
           </Reveal>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {audiences.map((a, i) => (
               <Reveal
                 key={a.title}
                 delayMs={i * 70}
-                className="flex gap-4 rounded-2xl border border-border bg-card p-6"
+                className="flex min-h-14 items-center gap-3 rounded-xl border border-border bg-card p-4 sm:items-start sm:gap-4 sm:rounded-2xl sm:p-6"
               >
                 <a.icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
                 <div>
                   <h3 className="text-base font-semibold text-foreground">{a.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-1 hidden text-sm leading-relaxed text-muted-foreground sm:block">
                     {a.description}
                   </p>
                 </div>
@@ -205,7 +216,7 @@ function HomePage() {
       <section
         id="download"
         tabIndex={-1}
-        className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 focus:outline-none"
+        className="mx-auto max-w-6xl scroll-mt-20 px-4 py-14 focus:outline-none sm:py-20"
       >
         <Reveal className="mb-8 max-w-2xl">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">

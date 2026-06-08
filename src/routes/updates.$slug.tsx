@@ -35,7 +35,7 @@ export const Route = createFileRoute("/updates/$slug")({
 function ReleaseDetailPage() {
   const r = Route.useLoaderData() as import("@/lib/public-content-types").Release;
   return (
-    <article className="mx-auto max-w-3xl px-4 pt-16 pb-24 sm:pt-24">
+    <article className="mx-auto max-w-3xl px-4 pt-10 pb-16 sm:pt-24 sm:pb-24">
       <Link
         to="/updates"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -50,12 +50,14 @@ function ReleaseDetailPage() {
           <time dateTime={r.releaseDate} className="font-mono text-xs text-muted-foreground">
             {formatDate(r.releaseDate)}
           </time>
-          <PlatformBadges platforms={r.platforms} className="ml-auto" />
+          <PlatformBadges platforms={r.platforms} className="sm:ml-auto" />
         </div>
-        <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+        <h1 className="text-balance text-[2.1rem] font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
           {r.title}
         </h1>
-        <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{r.summary}</p>
+        <p className="text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
+          {r.summary}
+        </p>
         {r.isDemo && (
           <p className="inline-flex w-fit rounded-full border border-primary/35 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary">
             Demo content — not published information
@@ -64,14 +66,14 @@ function ReleaseDetailPage() {
       </Reveal>
 
       {r.majorFeature && (
-        <Reveal className="mt-10 rounded-2xl border border-border bg-card/40 p-6">
+        <Reveal className="mt-8 rounded-xl border border-border bg-card/40 p-4 sm:mt-10 sm:rounded-2xl sm:p-6">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-primary">
             Major feature
           </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             {r.majorFeature.title}
           </h2>
-          <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+          <p className="mt-2 erth-mobile-clamp-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
             {r.majorFeature.description}
           </p>
           {r.heroImageSrc && (
@@ -82,7 +84,7 @@ function ReleaseDetailPage() {
         </Reveal>
       )}
 
-      <div className="mt-12 space-y-10">
+      <div className="mt-10 space-y-8 sm:mt-12 sm:space-y-10">
         <ChangeSection title="New Features" changes={r.newFeatures} />
         <ChangeSection title="Improvements" changes={r.improvements} />
         <ChangeSection title="Bug Fixes" changes={r.bugFixes} />
@@ -110,10 +112,12 @@ function ChangeSection({ title, changes }: { title: string; changes: ReleaseChan
       </h2>
       <ul className="mt-4 space-y-4">
         {changes.map((c) => (
-          <li key={c.id} className="rounded-xl border border-border/70 bg-card/30 p-4">
+          <li key={c.id} className="rounded-xl border border-border/70 bg-card/30 p-3 sm:p-4">
             <p className="text-base font-medium text-foreground">{c.title}</p>
             {c.description && (
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{c.description}</p>
+              <p className="mt-1 hidden text-sm leading-relaxed text-muted-foreground sm:block">
+                {c.description}
+              </p>
             )}
             {c.category && (
               <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80">

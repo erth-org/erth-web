@@ -86,15 +86,15 @@ function ReportPage() {
     <>
       <section className="relative overflow-hidden">
         <StarBackdrop />
-        <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 sm:pt-28">
-          <Reveal className="space-y-5">
+        <div className="relative mx-auto max-w-3xl px-4 pt-12 pb-10 sm:pt-28 sm:pb-12">
+          <Reveal className="space-y-4 sm:space-y-5">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
               Feedback
             </p>
-            <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            <h1 className="text-balance text-[2.25rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
               Report an issue or suggest an idea
             </h1>
-            <p className="text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
               Tell us about something that's broken, something that could work better, or something
               new you'd like to see. Approved reports and ideas appear on the public roadmap below.
             </p>
@@ -115,7 +115,7 @@ function ReportPage() {
       </section>
 
       <section aria-labelledby="roadmap-heading" className="border-t border-border/60 bg-card/30">
-        <div className="mx-auto max-w-6xl px-4 py-20">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
           <Reveal className="mb-8 max-w-2xl">
             <h2
               id="roadmap-heading"
@@ -123,7 +123,7 @@ function ReportPage() {
             >
               Public roadmap
             </h2>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+            <p className="mt-3 hidden text-base leading-relaxed text-muted-foreground sm:block">
               Accepted reports and ideas, what's in progress, and what has already shipped. Only
               moderated, approved entries appear here — private submissions are never shown.
             </p>
@@ -134,7 +134,7 @@ function ReportPage() {
 
       <section
         aria-labelledby="report-form-heading"
-        className="mx-auto max-w-6xl px-4 py-16 sm:py-20"
+        className="mx-auto max-w-6xl px-4 py-12 sm:py-20"
       >
         <ReportForm onSubmitted={addLocalFeedback} />
       </section>
@@ -285,7 +285,12 @@ function ReportForm({ onSubmitted }: { onSubmitted: (item: PublicFeedbackItem) =
   }
 
   return (
-    <div className={cn("rounded-2xl border p-6 transition-colors sm:p-8", selectedStyle.formShell)}>
+    <div
+      className={cn(
+        "rounded-xl border p-4 transition-colors sm:rounded-2xl sm:p-8",
+        selectedStyle.formShell,
+      )}
+    >
       <div className="mb-6 max-w-2xl">
         <div>
           <h2 id="report-form-heading" className="text-xl font-semibold text-foreground">
@@ -323,7 +328,7 @@ function ReportForm({ onSubmitted }: { onSubmitted: (item: PublicFeedbackItem) =
             <div
               role="radiogroup"
               aria-labelledby="report-type-label"
-              className="grid gap-3 sm:grid-cols-3"
+              className="grid gap-2 sm:grid-cols-3 sm:gap-3"
             >
               {TYPE_CARDS.map((card) => {
                 const checked = type === card.value;
@@ -332,7 +337,7 @@ function ReportForm({ onSubmitted }: { onSubmitted: (item: PublicFeedbackItem) =
                     key={card.value}
                     onClick={() => setType(card.value)}
                     className={cn(
-                      "relative flex cursor-pointer flex-col gap-2 rounded-xl border p-4 transition-colors focus-within:ring-2 focus-within:ring-ring",
+                      "relative flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors focus-within:ring-2 focus-within:ring-ring sm:min-h-0 sm:flex-col sm:items-start sm:gap-2 sm:p-4",
                       checked
                         ? FEEDBACK_TYPE_STYLES[card.value].selectedCard
                         : cn(
@@ -359,7 +364,7 @@ function ReportForm({ onSubmitted }: { onSubmitted: (item: PublicFeedbackItem) =
                       aria-hidden="true"
                     />
                     <span className="text-sm font-medium text-foreground">{card.title}</span>
-                    <span className="text-xs leading-relaxed text-muted-foreground">
+                    <span className="hidden text-xs leading-relaxed text-muted-foreground sm:block">
                       {card.description}
                     </span>
                   </label>
@@ -370,7 +375,7 @@ function ReportForm({ onSubmitted }: { onSubmitted: (item: PublicFeedbackItem) =
             <div
               role="note"
               className={cn(
-                "rounded-xl border p-4 text-sm leading-relaxed text-muted-foreground",
+                "hidden rounded-xl border p-4 text-sm leading-relaxed text-muted-foreground sm:block",
                 selectedStyle.note,
               )}
             >
@@ -396,7 +401,7 @@ function ReportForm({ onSubmitted }: { onSubmitted: (item: PublicFeedbackItem) =
               />
             </Field>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
               <Field label="Category" htmlFor="r-category" required>
                 <select id="r-category" name="category" required className={inputClass}>
                   <option value="">Select…</option>
@@ -457,7 +462,7 @@ function ReportForm({ onSubmitted }: { onSubmitted: (item: PublicFeedbackItem) =
             <button
               type="submit"
               className={cn(
-                "inline-flex min-h-11 items-center justify-center rounded-md px-5 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2",
+                "inline-flex min-h-11 w-full items-center justify-center rounded-md px-5 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 sm:w-auto",
                 selectedStyle.button,
               )}
             >
@@ -548,7 +553,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
   return (
     <div className="space-y-8">
       {hasAny && (
-        <div className="flex flex-col gap-3 rounded-xl border border-border bg-background p-3 sm:flex-row sm:items-center">
+        <div className="grid gap-3 rounded-xl border border-border bg-background p-3 sm:flex sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <Search
               className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
@@ -575,7 +580,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
                 id="feedback-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="h-11 rounded-md border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+                className="h-11 w-full rounded-md border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring sm:w-auto"
               >
                 <option value="all">All categories</option>
                 {categories.map((c) => (
@@ -594,7 +599,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
               id="feedback-type"
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as FeedbackType | "all")}
-              className="h-11 rounded-md border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+              className="h-11 w-full rounded-md border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring sm:w-auto"
             >
               <option value="all">All types</option>
               {(Object.keys(FEEDBACK_TYPE_LABEL) as FeedbackType[]).map((t) => (
@@ -612,7 +617,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
               id="feedback-sort"
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
-              className="h-11 rounded-md border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+              className="h-11 w-full rounded-md border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring sm:w-auto"
             >
               <option value="recent">Most recent</option>
               <option value="votes">Most voted</option>
@@ -626,7 +631,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
                 setCategory("all");
                 setTypeFilter("all");
               }}
-              className="inline-flex h-11 items-center rounded-md border border-border px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex h-11 items-center justify-center rounded-md border border-border px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Clear
             </button>
@@ -634,7 +639,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-3 md:gap-6">
         {groups.map(({ status, description }) => {
           const items = filtered.filter((i) => i.status === status);
           return (
@@ -643,7 +648,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
               aria-labelledby={`roadmap-col-${status}`}
               className="flex flex-col"
             >
-              <header className="flex flex-wrap items-center justify-between gap-2">
+              <header className="flex items-center justify-between gap-2">
                 <h3
                   id={`roadmap-col-${status}`}
                   className="text-sm font-semibold uppercase tracking-wide text-foreground"
@@ -652,7 +657,7 @@ function PublicRoadmap({ items }: { items: PublicFeedbackItem[] }) {
                 </h3>
                 <StatusBadge status={status} />
               </header>
-              <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+              <p className="mt-1 hidden text-xs text-muted-foreground sm:block">{description}</p>
               <div className="mt-4 flex-1 space-y-3">
                 {items.length === 0 ? (
                   <EmptyColumn status={status} />
@@ -676,7 +681,7 @@ function EmptyColumn({ status }: { status: PublicFeedbackStatus }) {
         ? "No publicly announced work is currently in progress."
         : "Released fixes and features will appear here.";
   return (
-    <p className="rounded-xl border border-dashed border-border bg-background/40 p-4 text-sm text-muted-foreground">
+    <p className="rounded-xl border border-dashed border-border bg-background/40 p-3 text-sm text-muted-foreground sm:p-4">
       {copy}
     </p>
   );
@@ -686,7 +691,7 @@ function FeedbackCard({ item }: { item: PublicFeedbackItem }) {
   const style = FEEDBACK_TYPE_STYLES[item.type];
   const content = (
     <>
-      <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground sm:gap-2">
         <span className={cn("rounded-full border px-2 py-0.5", style.pill)}>
           {FEEDBACK_TYPE_LABEL[item.type]}
         </span>
@@ -699,18 +704,23 @@ function FeedbackCard({ item }: { item: PublicFeedbackItem }) {
           </>
         )}
       </div>
-      <h4 className={cn("mt-2 text-sm font-medium leading-snug text-foreground", style.titleHover)}>
+      <h4
+        className={cn(
+          "erth-mobile-clamp-2 mt-2 text-sm font-medium leading-snug text-foreground",
+          style.titleHover,
+        )}
+      >
         {item.title}
       </h4>
       {item.publicDescription && (
-        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-2 hidden line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:block">
           {item.publicDescription}
         </p>
       )}
       {item.latestOfficialResponse && (
         <p
           className={cn(
-            "mt-2 line-clamp-2 rounded-md border-l-2 px-2 py-1 text-xs italic text-foreground/80",
+            "mt-2 hidden line-clamp-2 rounded-md border-l-2 px-2 py-1 text-xs italic text-foreground/80 sm:block",
             style.roadmapResponse,
           )}
         >
@@ -723,13 +733,24 @@ function FeedbackCard({ item }: { item: PublicFeedbackItem }) {
           {item.voteCount}
           <span className="sr-only">votes</span>
         </span>
-        <time dateTime={item.submissionDate}>{formatRoadmapDate(item.submissionDate)}</time>
+        <time dateTime={item.submissionDate}>
+          <span className="sm:hidden">
+            {new Date(`${item.submissionDate}T00:00:00.000Z`).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              timeZone: "UTC",
+            })}
+          </span>
+          <span className="hidden sm:inline">{formatRoadmapDate(item.submissionDate)}</span>
+        </time>
       </div>
     </>
   );
 
   if (item.isLocal) {
-    return <article className={cn("rounded-xl border p-4", style.roadmapCard)}>{content}</article>;
+    return (
+      <article className={cn("rounded-xl border p-3 sm:p-4", style.roadmapCard)}>{content}</article>
+    );
   }
 
   return (
@@ -737,7 +758,7 @@ function FeedbackCard({ item }: { item: PublicFeedbackItem }) {
       to="/report/$slug"
       params={{ slug: item.slug }}
       className={cn(
-        "group block rounded-xl border p-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "group block rounded-xl border p-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-4",
         style.roadmapCard,
       )}
     >

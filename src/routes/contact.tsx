@@ -42,15 +42,15 @@ function ContactPage() {
     <>
       <section className="relative overflow-hidden">
         <StarBackdrop />
-        <div className="relative mx-auto max-w-3xl px-4 pt-20 pb-12 sm:pt-28">
-          <Reveal className="space-y-5">
+        <div className="relative mx-auto max-w-3xl px-4 pt-12 pb-10 sm:pt-28 sm:pb-12">
+          <Reveal className="space-y-4 sm:space-y-5">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
               Contact
             </p>
-            <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            <h1 className="text-balance text-[2.35rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl">
               Talk to the team
             </h1>
-            <p className="text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
               Send questions, partnership notes, support requests, or product feedback. This demo
               form stores messages locally so the flow can be tested without a backend.
             </p>
@@ -58,26 +58,37 @@ function ContactPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 pb-24 lg:grid-cols-[0.8fr_1.2fr]">
-        <Reveal className="space-y-4">
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <Mail className="size-5 text-primary" aria-hidden="true" />
-            <h2 className="mt-4 text-lg font-semibold text-foreground">General contact</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Demo inbox: contact@erth.app
-            </p>
+      <section className="mx-auto grid max-w-6xl gap-6 px-4 pb-16 sm:gap-8 sm:pb-24 lg:grid-cols-[0.8fr_1.2fr]">
+        <Reveal className="grid gap-3 sm:grid-cols-2 lg:block lg:space-y-4">
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 sm:rounded-2xl sm:p-5 lg:block">
+            <Mail className="size-5 shrink-0 text-primary" aria-hidden="true" />
+            <div>
+              <h2 className="text-base font-semibold text-foreground sm:text-lg lg:mt-4">
+                General contact
+              </h2>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:mt-2 sm:text-sm">
+                Demo inbox: contact@erth.app
+              </p>
+            </div>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <MessageSquare className="size-5 text-primary" aria-hidden="true" />
-            <h2 className="mt-4 text-lg font-semibold text-foreground">Response scope</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Use this page for product questions, partnerships, press, or support routing.
-            </p>
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 sm:rounded-2xl sm:p-5 lg:block">
+            <MessageSquare className="size-5 shrink-0 text-primary" aria-hidden="true" />
+            <div>
+              <h2 className="text-base font-semibold text-foreground sm:text-lg lg:mt-4">
+                Response scope
+              </h2>
+              <p className="mt-1 hidden text-sm leading-relaxed text-muted-foreground sm:block">
+                Use this page for product questions, partnerships, press, or support routing.
+              </p>
+            </div>
           </div>
         </Reveal>
 
         <Reveal>
-          <form onSubmit={onSubmit} className="rounded-2xl border border-border bg-card p-6">
+          <form
+            onSubmit={onSubmit}
+            className="rounded-xl border border-border bg-card p-4 sm:rounded-2xl sm:p-6"
+          >
             {sent && (
               <p
                 role="status"
@@ -86,7 +97,7 @@ function ContactPage() {
                 Demo message saved locally.
               </p>
             )}
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
               <Field label="Name" htmlFor="contact-name">
                 <input
                   id="contact-name"
@@ -132,7 +143,7 @@ function ContactPage() {
             </div>
             <button
               type="submit"
-              className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
             >
               <Send className="size-4" aria-hidden="true" />
               Send message
