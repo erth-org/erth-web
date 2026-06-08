@@ -15,10 +15,7 @@ export function StarBackdrop({ className }: { className?: string }) {
   return (
     <div
       aria-hidden="true"
-      className={cn(
-        "pointer-events-none absolute inset-0 overflow-hidden",
-        className,
-      )}
+      className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
     >
       <div className="erth-stars-layer erth-stars-layer-static absolute inset-0" />
       <div className="erth-stars-layer erth-stars-layer-twinkle absolute inset-0" />

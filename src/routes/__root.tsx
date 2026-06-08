@@ -14,7 +14,9 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { DevPlaceholderBanner } from "@/components/dev-placeholder-banner";
-import { siteConfig, getProductionUrl } from "@/lib/site-config";
+import { SkyMotion } from "@/components/sky-motion";
+import { withBasePath } from "@/lib/asset-path";
+import { siteConfig, getProductionUrl, absoluteUrl } from "@/lib/site-config";
 
 function NotFoundComponent() {
   return (
@@ -87,6 +89,7 @@ function buildRootScripts() {
     name: "Erth",
     url: origin,
     description: siteConfig.oneLiner,
+    logo: absoluteUrl("brand/erth-logo.png"),
   };
   if (siteConfig.contact.email) {
     org.contactPoint = {
@@ -109,13 +112,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Erth — A living digital map of your world" },
+      { title: "Erth" },
       { name: "description", content: siteConfig.oneLiner },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Erth" },
       { name: "twitter:card", content: "summary" },
+      { name: "theme-color", content: "#050509" },
+      { name: "apple-mobile-web-app-title", content: "Erth" },
     ],
     links: [
+      { rel: "icon", href: withBasePath("icons/favicon.ico"), sizes: "any" },
+      {
+        rel: "icon",
+        href: withBasePath("icons/favicon-16x16.png"),
+        type: "image/png",
+        sizes: "16x16",
+      },
+      {
+        rel: "icon",
+        href: withBasePath("icons/favicon-32x32.png"),
+        type: "image/png",
+        sizes: "32x32",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: withBasePath("icons/apple-touch-icon.png"),
+        sizes: "180x180",
+      },
+      { rel: "manifest", href: withBasePath("site.webmanifest") },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -127,7 +151,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
     ],
-    scripts: buildRootScripts(),
+    scripts: [
+      ...buildRootScripts(),
+      {
+        type: "module",
+        src: "https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs",
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -155,7 +185,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <DevPlaceholderBanner />
-      <div className="flex min-h-screen flex-col">
+      <div className="erth-site-shell flex min-h-screen flex-col">
+        <div className="erth-visible-stars" aria-hidden="true" />
+        <SkyMotion />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:outline-none"
