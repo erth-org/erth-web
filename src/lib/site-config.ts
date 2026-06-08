@@ -41,14 +41,14 @@ export function getProductionUrl(): string | null {
 export function absoluteUrl(path: string): string | null {
   const origin = getProductionUrl();
   if (!origin) return null;
-  return new URL(path, origin + "/").toString();
+  return new URL(path.replace(/^\/+/, ""), origin + "/").toString();
 }
 
 /** Absolute download deep-link, or null when productionUrl is not configured. */
 export function getDownloadUrl(): string | null {
   const origin = getProductionUrl();
   if (!origin) return null;
-  return new URL("/#download", origin + "/").toString();
+  return new URL("#download", origin + "/").toString();
 }
 
 export function hasRealStoreLinks(): boolean {
@@ -80,8 +80,7 @@ export function validateSiteConfig(): void {
   const issues = getUnresolvedPlaceholders();
   if (issues.length > 0) {
     throw new Error(
-      "[validateSiteConfig] Unresolved placeholders:\n" +
-        issues.map((i) => `  - ${i}`).join("\n"),
+      "[validateSiteConfig] Unresolved placeholders:\n" + issues.map((i) => `  - ${i}`).join("\n"),
     );
   }
 }

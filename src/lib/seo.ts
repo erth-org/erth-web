@@ -30,6 +30,7 @@ export function buildPageHead({ title, description, path }: HeadInput): {
   links: LinkTag[];
 } {
   const canonical = absoluteUrl(path);
+  const socialImage = absoluteUrl("brand/erth-logo.png");
 
   const meta: MetaTag[] = [
     { title },
@@ -42,6 +43,13 @@ export function buildPageHead({ title, description, path }: HeadInput): {
 
   if (canonical) {
     meta.push({ property: "og:url", content: canonical });
+  }
+
+  if (socialImage) {
+    meta.push(
+      { property: "og:image", content: socialImage },
+      { name: "twitter:image", content: socialImage },
+    );
   }
 
   const links: LinkTag[] = canonical ? [{ rel: "canonical", href: canonical }] : [];

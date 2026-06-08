@@ -6,10 +6,42 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const pagesBasePath = (process.env.PAGES_BASE_PATH ?? "").replace(/\/$/, "");
+const publicBase = pagesBasePath ? `${pagesBasePath}/` : "/";
+
 export default defineConfig({
   tanstackStart: {
+    router: {
+      basepath: pagesBasePath || undefined,
+    },
+    prerender: {
+      enabled: true,
+      crawlLinks: true,
+      concurrency: 14,
+      failOnError: true,
+    },
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+  },
+  vite: {
+    base: publicBase,
+    build: {
+      outDir: "out",
+      emptyOutDir: true,
+    },
+    environments: {
+      client: {
+        build: {
+          outDir: "out",
+        },
+      },
+      ssr: {
+        build: {
+          outDir: ".tanstack/pages-server",
+          emptyOutDir: true,
+        },
+      },
+    },
   },
 });
