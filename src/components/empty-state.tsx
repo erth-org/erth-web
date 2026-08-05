@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
 export function EmptyState({
+  icon,
   title,
   description,
   className,
 }: {
+  icon?: ReactNode;
   title: string;
   description?: string;
   className?: string;
@@ -16,6 +19,7 @@ export function EmptyState({
         className,
       )}
     >
+      {icon && <div className="mb-4 flex justify-center">{icon}</div>}
       <p className="text-base font-medium text-foreground">{title}</p>
       {description && (
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>

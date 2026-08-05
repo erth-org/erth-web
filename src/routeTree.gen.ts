@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpdatesRouteImport } from './routes/updates'
+import { Route as TestingRouteImport } from './routes/testing'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReportRouteImport } from './routes/report'
@@ -25,6 +26,11 @@ import { Route as ReportSlugRouteImport } from './routes/report.$slug'
 const UpdatesRoute = UpdatesRouteImport.update({
   id: '/updates',
   path: '/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestingRoute = TestingRouteImport.update({
+  id: '/testing',
+  path: '/testing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/testing': typeof TestingRoute
   '/updates': typeof UpdatesRouteWithChildren
   '/report/$slug': typeof ReportSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/testing': typeof TestingRoute
   '/updates': typeof UpdatesRouteWithChildren
   '/report/$slug': typeof ReportSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/report': typeof ReportRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/testing': typeof TestingRoute
   '/updates': typeof UpdatesRouteWithChildren
   '/report/$slug': typeof ReportSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/sitemap.xml'
     | '/terms'
+    | '/testing'
     | '/updates'
     | '/report/$slug'
     | '/updates/$slug'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/sitemap.xml'
     | '/terms'
+    | '/testing'
     | '/updates'
     | '/report/$slug'
     | '/updates/$slug'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/sitemap.xml'
     | '/terms'
+    | '/testing'
     | '/updates'
     | '/report/$slug'
     | '/updates/$slug'
@@ -181,6 +193,7 @@ export interface RootRouteChildren {
   ReportRoute: typeof ReportRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  TestingRoute: typeof TestingRoute
   UpdatesRoute: typeof UpdatesRouteWithChildren
 }
 
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       path: '/updates'
       fullPath: '/updates'
       preLoaderRoute: typeof UpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/testing': {
+      id: '/testing'
+      path: '/testing'
+      fullPath: '/testing'
+      preLoaderRoute: typeof TestingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -305,6 +325,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportRoute: ReportRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  TestingRoute: TestingRoute,
   UpdatesRoute: UpdatesRouteWithChildren,
 }
 export const routeTree = rootRouteImport

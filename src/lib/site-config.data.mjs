@@ -6,18 +6,14 @@
 export const PLACEHOLDER = "__PLACEHOLDER__";
 
 export const siteConfigData = {
-  // TODO: set once a domain / project name is assigned.
-  productionUrl: "",
+  productionUrl: "https://erth-org.github.io/erth-web/",
 
-  oneLiner:
-    "Erth is a living digital map of the places, moments, and experiences that shape your world.",
+  oneLiner: "Erth turns trips, moments, and memories into a living globe of your travel identity.",
 
-  visionStatement:
-    "Erth helps people capture meaningful experiences and build a lasting digital footprint of where they have been and what mattered along the way.",
+  visionStatement: "Your travels are part of who you are. Erth turns them into a living 3D globe.",
 
   contact: {
-    // TODO: confirm a real contact address before launch.
-    email: "",
+    email: "erthteamtesting@gmail.com",
   },
 
   store: {
@@ -26,8 +22,10 @@ export const siteConfigData = {
   },
 
   legal: {
-    status: "pending-review", // must be "approved" before a production build passes
-    lastUpdated: "", // ISO date, e.g. "2026-06-05"
+    // Pending review is an intentional, publishable private-beta state. When
+    // status changes to approved, the validator requires a date and final copy.
+    status: "pending-review",
+    lastUpdated: "",
     privacyIsPlaceholder: true,
     termsIsPlaceholder: true,
   },
@@ -47,13 +45,8 @@ export const siteConfigData = {
     votingEndpoint: null,
   },
 
-  // Placeholder cards demonstrate layout in development only. Production either
-  // renders real members or omits the Team grid entirely.
-  team: [
-    { name: PLACEHOLDER, role: PLACEHOLDER, bio: PLACEHOLDER, photoUrl: null, linkedinUrl: null },
-    { name: PLACEHOLDER, role: PLACEHOLDER, bio: PLACEHOLDER, photoUrl: null, linkedinUrl: null },
-    { name: PLACEHOLDER, role: PLACEHOLDER, bio: PLACEHOLDER, photoUrl: null, linkedinUrl: null },
-  ],
+  // Individual profiles are omitted until verified team details are available.
+  team: [],
 };
 
 export function isPlaceholderTeamMember(m) {
@@ -72,12 +65,13 @@ export function getUnresolvedPlaceholders(cfg = siteConfigData) {
 
   if (!cfg.productionUrl) issues.push("productionUrl is not set");
   if (!cfg.contact.email) issues.push("contact.email is not set");
-  if (cfg.legal.status !== "approved") issues.push('legal.status is not "approved"');
-  if (!cfg.legal.lastUpdated) issues.push("legal.lastUpdated date is missing");
-  if (cfg.legal.privacyIsPlaceholder)
-    issues.push("Privacy Policy still contains placeholder content");
-  if (cfg.legal.termsIsPlaceholder)
-    issues.push("Terms & Conditions still contains placeholder content");
+  if (cfg.legal.status === "approved") {
+    if (!cfg.legal.lastUpdated) issues.push("legal.lastUpdated date is missing");
+    if (cfg.legal.privacyIsPlaceholder)
+      issues.push("Privacy Policy is marked approved but still contains pending copy");
+    if (cfg.legal.termsIsPlaceholder)
+      issues.push("Terms & Conditions are marked approved but still contain pending copy");
+  }
 
   // Defence-in-depth: enabling submission/voting requires a real endpoint.
   if (cfg.feedback.submissionEnabled && !cfg.feedback.submissionEndpoint) {

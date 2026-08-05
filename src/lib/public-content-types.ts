@@ -8,31 +8,10 @@
 export type Platform = "ios" | "android" | "web";
 
 export interface Feature {
-  /** Stable id (kebab-case). Used for keys + linking. */
+  /** Stable id (kebab-case). Used for keys and section anchors. */
   id: string;
   title: string;
-  /** One-sentence explanation of what this capability does. */
-  summary: string;
-  /** Why it matters to the user. */
-  benefit: string;
-  /**
-   * Path to an optimized real Erth screenshot (AVIF/WebP preferred).
-   * `null` when no real screenshot exists yet — entry is dev-only.
-   */
-  screenshotSrc: string | null;
-  screenshotAlt: string;
-  platforms: Platform[];
-  /**
-   * Flip to true ONLY when copy + screenshot are confirmed against the
-   * live application. Production hides unverified entries.
-   */
-  verified: boolean;
-  /**
-   * Demo-only content used to review layouts before real published content is
-   * available. Production routes hide demo entries and the production build
-   * gate blocks while demo entries remain.
-   */
-  isDemo?: boolean;
+  body: string;
 }
 
 export interface ReleaseChange {
@@ -61,12 +40,6 @@ export interface Release {
   newFeatures: ReleaseChange[];
   improvements: ReleaseChange[];
   bugFixes: ReleaseChange[];
-  /**
-   * Demo-only content used to review layouts before real published content is
-   * available. Production routes hide demo entries and the production build
-   * gate blocks while demo entries remain.
-   */
-  isDemo?: boolean;
 }
 
 export type FeedbackType = "bug" | "existing-feature-issue" | "feature-suggestion";
@@ -93,9 +66,6 @@ export interface PublicFeedbackItem {
    * in src/content/updates.ts. Validation enforces this.
    */
   releasedInUpdateSlug?: string;
-  /** Demo-only roadmap content, or a local browser-only submission. */
-  isDemo?: boolean;
-  isLocal?: boolean;
 }
 
 export const FEEDBACK_TYPE_LABEL: Record<FeedbackType, string> = {

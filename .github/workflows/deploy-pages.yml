@@ -45,7 +45,7 @@ jobs:
         run: pnpm run lint
 
       - name: Build static site
-        run: pnpm run build
+        run: pnpm run build:strict
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
 

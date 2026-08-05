@@ -17,7 +17,6 @@ const RELEASE_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
 export const Route = createFileRoute("/updates/$slug")({
   loader: ({ params }) => {
     const release = getReleaseBySlug(params.slug);
-    if (release?.isDemo && !import.meta.env.DEV) throw notFound();
     if (!release) throw notFound();
     return release;
   },
@@ -37,7 +36,7 @@ function ReleaseDetailPage() {
   return (
     <article className="mx-auto max-w-3xl px-4 pt-10 pb-16 sm:pt-24 sm:pb-24">
       <Link
-        to="/updates"
+        to="/updates/"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <ArrowLeft className="size-3.5" aria-hidden="true" />
@@ -58,11 +57,6 @@ function ReleaseDetailPage() {
         <p className="text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
           {r.summary}
         </p>
-        {r.isDemo && (
-          <p className="inline-flex w-fit rounded-full border border-primary/35 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary">
-            Demo content — not published information
-          </p>
-        )}
       </Reveal>
 
       {r.majorFeature && (
@@ -92,7 +86,7 @@ function ReleaseDetailPage() {
 
       <div className="mt-16 border-t border-border/60 pt-6">
         <Link
-          to="/updates"
+          to="/updates/"
           className="inline-flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />
@@ -139,7 +133,7 @@ function ReleaseNotFound() {
         That update doesn't exist or hasn't been published.
       </p>
       <Link
-        to="/updates"
+        to="/updates/"
         className="mt-6 inline-flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
       >
         <ArrowLeft className="size-3.5" aria-hidden="true" />

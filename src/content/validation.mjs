@@ -43,20 +43,9 @@ function validatePlatforms(platforms, ctx, issues) {
 }
 
 function validateFeature(f, ctx, issues) {
-  if (f.isDemo === true)
-    issues.push(`${ctx}: demo content must be removed or replaced before production`);
   if (!nonEmptyString(f.id) || !SLUG.test(f.id)) issues.push(`${ctx}: id must be kebab-case slug`);
   if (looksLikePlaceholder(f.title)) issues.push(`${ctx}: title looks like placeholder`);
-  if (looksLikePlaceholder(f.summary)) issues.push(`${ctx}: summary looks like placeholder`);
-  if (looksLikePlaceholder(f.benefit)) issues.push(`${ctx}: benefit looks like placeholder`);
-  validatePlatforms(f.platforms, ctx, issues);
-  if (typeof f.verified !== "boolean") issues.push(`${ctx}: verified must be boolean`);
-  if (f.screenshotSrc !== null) {
-    if (!nonEmptyString(f.screenshotSrc))
-      issues.push(`${ctx}: screenshotSrc must be a non-empty path or null`);
-    if (!nonEmptyString(f.screenshotAlt))
-      issues.push(`${ctx}: screenshotAlt is required when screenshotSrc is set`);
-  }
+  if (looksLikePlaceholder(f.body)) issues.push(`${ctx}: body looks like placeholder`);
 }
 
 function validateReleaseChange(c, ctx, issues) {
@@ -66,8 +55,6 @@ function validateReleaseChange(c, ctx, issues) {
 }
 
 function validateRelease(r, ctx, issues) {
-  if (r.isDemo === true)
-    issues.push(`${ctx}: demo content must be removed or replaced before production`);
   if (!nonEmptyString(r.slug) || !SLUG.test(r.slug)) issues.push(`${ctx}: slug must be kebab-case`);
   if (!nonEmptyString(r.version) || !SEMVER_LIKE.test(r.version))
     issues.push(`${ctx}: version must be semver-like (e.g. "1.0.0")`);
@@ -90,8 +77,6 @@ function validateRelease(r, ctx, issues) {
 }
 
 function validateFeedback(item, ctx, releaseSlugs, issues) {
-  if (item.isDemo === true)
-    issues.push(`${ctx}: demo content must be removed or replaced before production`);
   if (!nonEmptyString(item.slug) || !SLUG.test(item.slug))
     issues.push(`${ctx}: slug must be kebab-case`);
   if (!VALID_FEEDBACK_TYPES.has(item.type)) issues.push(`${ctx}: invalid type "${item.type}"`);
@@ -123,10 +108,14 @@ function validateFeedback(item, ctx, releaseSlugs, issues) {
 
 export async function getInvalidContentEntries() {
   const issues = [];
-  const [{ features }, { releases }, { publicFeedback }] = await Promise.all([
-    import("./features.ts"),
-    import("./updates.ts"),
-    import("./public-feedback.ts"),
+  const [
+    { featureData: features },
+    { releaseData: releases },
+    { publicFeedbackData: publicFeedback },
+  ] = await Promise.all([
+    import("./features.data.mjs"),
+    import("./updates.data.mjs"),
+    import("./public-feedback.data.mjs"),
   ]);
 
   if (!Array.isArray(features)) issues.push("features.ts: must export an array");

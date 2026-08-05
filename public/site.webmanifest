@@ -1,7 +1,7 @@
 {
   "name": "Erth",
   "short_name": "Erth",
-  "description": "A living digital map of your world.",
+  "description": "Erth turns trips, moments, and memories into a living globe of your travel identity.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

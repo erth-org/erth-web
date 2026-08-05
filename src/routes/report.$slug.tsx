@@ -44,7 +44,7 @@ function FeedbackDetail() {
   return (
     <article className="mx-auto max-w-3xl px-4 pt-10 pb-16 sm:pt-24 sm:pb-24">
       <Link
-        to="/report"
+        to="/report/"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <ArrowLeft className="size-3.5" aria-hidden="true" />
@@ -104,7 +104,7 @@ function FeedbackDetail() {
       {item.status === "fulfilled" && release && (
         <Reveal className="mt-10">
           <Link
-            to="/updates/$slug"
+            to="/updates/$slug/"
             params={{ slug: release.slug }}
             className="group flex items-center justify-between gap-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 transition-colors hover:border-emerald-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:rounded-2xl sm:p-5"
           >
@@ -127,7 +127,7 @@ function FeedbackDetail() {
 
       <div className="mt-16 border-t border-border/60 pt-6">
         <Link
-          to="/report"
+          to="/report/"
           className="inline-flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />
@@ -148,7 +148,7 @@ function NotFoundView() {
       <h1 className="text-2xl font-semibold text-foreground">Feedback item not found</h1>
       <p className="mt-2 text-muted-foreground">That entry doesn't exist or isn't public.</p>
       <Link
-        to="/report"
+        to="/report/"
         className="mt-6 inline-flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
       >
         <ArrowLeft className="size-3.5" aria-hidden="true" />

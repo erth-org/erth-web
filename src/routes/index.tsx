@@ -1,98 +1,93 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, Beaker, Mail } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
-import { siteConfig } from "@/lib/site-config";
-import { vision, coreIdeas, audiences } from "@/lib/erth-content";
+import { productTruths, coreIdeas, audiences } from "@/lib/erth-content";
 import { Reveal } from "@/components/reveal";
 import { HeroVisual } from "@/components/hero-visual";
-import { QrDownload } from "@/components/qr-download";
 import { StarBackdrop } from "@/components/star-backdrop";
+
+const CONTACT_EMAIL = "erthteamtesting@gmail.com";
 
 export const Route = createFileRoute("/")({
   head: () =>
     buildPageHead({
       title: "Erth",
-      description: siteConfig.oneLiner,
+      description:
+        "Erth is a private beta travel social app where trips, moments, and memories become a living 3D globe of your travel identity.",
       path: "/",
     }),
   component: HomePage,
 });
 
-/**
- * Handles /#download deep-links from other routes: scroll to the Download
- * section after render and move focus there. Honors reduced-motion.
- */
-function useDownloadHash() {
+function useVisionHash() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     let raf = 0;
-    const scrollToDownload = () => {
-      if (window.location.hash !== "#download") return;
+    const focusVision = () => {
+      if (window.location.hash !== "#vision") return;
       const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
       raf = window.requestAnimationFrame(() => {
-        const el = document.getElementById("download");
-        if (!el) return;
-        el.scrollIntoView({
-          behavior: reduce ? "auto" : "smooth",
-          block: "start",
-        });
-        // Move keyboard focus to the section without an extra scroll jump.
-        el.focus({ preventScroll: true });
+        const section = document.getElementById("vision");
+        if (!section) return;
+        section.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        section.focus({ preventScroll: true });
       });
     };
 
-    // Handle both initial deep-link and same-page hash clicks.
-    scrollToDownload();
-    window.addEventListener("hashchange", scrollToDownload);
+    focusVision();
+    window.addEventListener("hashchange", focusVision);
     return () => {
       window.cancelAnimationFrame(raf);
-      window.removeEventListener("hashchange", scrollToDownload);
+      window.removeEventListener("hashchange", focusVision);
     };
   }, []);
 }
 
 function HomePage() {
-  useDownloadHash();
-
-  const demoSnapshot = [
-    { label: "[Demo] Saved places", value: "128", detail: "Mock count for layout review" },
-    { label: "[Demo] Private moments", value: "342", detail: "Mock count for layout review" },
-    { label: "[Demo] Shared collections", value: "12", detail: "Mock count for layout review" },
-  ];
+  useVisionHash();
 
   return (
     <>
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <StarBackdrop />
         <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-14 sm:pt-28 sm:pb-24">
           <div className="grid min-w-0 items-center gap-3 sm:gap-8 md:grid-cols-[1fr_1.05fr] md:gap-12">
             <Reveal className="min-w-0 space-y-5 sm:space-y-6">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                Private TestFlight Beta
+              </p>
               <h1 className="max-w-full text-balance text-[2.15rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                A living digital map of your world.
+                Travel is part of who you are.
               </h1>
               <p className="max-w-full text-pretty text-[0.95rem] leading-relaxed text-muted-foreground sm:max-w-xl sm:text-lg">
-                Capture meaningful experiences and build a lasting digital footprint of where you
-                have been and what mattered along the way.
+                Erth turns your trips, moments, and memories into a living 3D globe, giving the
+                places that shaped you a home beyond Instagram and your camera roll.
+              </p>
+              <p className="max-w-xl border-l-2 border-primary/60 pl-4 text-sm leading-relaxed text-foreground/85">
+                Erth is currently in private TestFlight beta. We are testing the first version with
+                a small group of early users before a wider release.
               </p>
               <div className="grid max-w-full gap-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:pt-2">
                 <Link
                   to="/"
-                  hash="download"
+                  hash="vision"
+                  onClick={() => {
+                    window.requestAnimationFrame(() => {
+                      document.getElementById("vision")?.focus({ preventScroll: true });
+                    });
+                  }}
                   className="inline-flex min-h-11 w-full max-w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
                 >
-                  <Download className="size-4" aria-hidden="true" />
-                  <span className="sm:hidden">Download</span>
-                  <span className="hidden sm:inline">Download the app</span>
+                  Explore the vision
+                  <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
                 <Link
-                  to="/about"
+                  to="/contact/"
                   className="inline-flex min-h-11 w-full max-w-full items-center justify-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
                 >
-                  Learn more
-                  <ArrowRight className="size-4" aria-hidden="true" />
+                  Contact the team
                 </Link>
               </div>
             </Reveal>
@@ -110,131 +105,191 @@ function HomePage() {
       </section>
 
       <section className="border-t border-border/60 bg-card/20">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
-          <Reveal className="mb-6 max-w-2xl">
-            <p className="font-mono text-[10px] uppercase tracking-wider text-primary">
-              Demo snapshot — not published information
-            </p>
-          </Reveal>
-          <div className="grid grid-cols-3 gap-2 sm:gap-4">
-            {demoSnapshot.map((item, i) => (
-              <Reveal
-                key={item.label}
-                delayMs={i * 70}
-                className="rounded-xl border border-border bg-card p-3 sm:rounded-2xl sm:p-5"
-              >
-                <p className="erth-mobile-clamp-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground sm:text-[10px]">
+        <div className="mx-auto grid max-w-6xl gap-3 px-4 py-10 sm:gap-4 sm:py-14 md:grid-cols-3">
+          {productTruths.map((item, index) => (
+            <Reveal
+              key={item.label}
+              delayMs={index * 70}
+              className="rounded-xl border border-border bg-card p-5 sm:rounded-2xl sm:p-6"
+            >
+              <div className="flex items-center gap-3">
+                <item.icon className="size-5 text-primary" aria-hidden="true" />
+                <p className="font-mono text-[10px] uppercase tracking-wider text-primary">
                   {item.label}
                 </p>
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:mt-3 sm:text-3xl">
-                  {item.value}
-                </p>
-                <p className="mt-1 hidden text-sm text-muted-foreground sm:block">{item.detail}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Our Vision */}
-      <section className="border-t border-border/60 bg-card/30">
-        <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
-          <Reveal className="space-y-4 sm:space-y-6">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Our vision
-            </h2>
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {vision.problem}
-            </p>
-            <p className="hidden text-base leading-relaxed text-muted-foreground sm:block">
-              {vision.why}
-            </p>
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {vision.future}
-            </p>
-            <p className="hidden text-base leading-relaxed text-muted-foreground sm:block">
-              {vision.contribution}
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Core Ideas */}
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
-        <Reveal className="mb-10 max-w-2xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            What it's built on
-          </h2>
-        </Reveal>
-        <div className="grid gap-3 md:grid-cols-3 md:gap-6">
-          {coreIdeas.map((idea, i) => (
-            <Reveal
-              key={idea.title}
-              delayMs={i * 90}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 sm:block sm:rounded-2xl sm:p-6"
-            >
-              <idea.icon className="size-5 shrink-0 text-primary sm:size-6" aria-hidden="true" />
-              <h3 className="text-base font-semibold text-foreground sm:mt-4 sm:text-lg">
-                {idea.title}
-              </h3>
-              <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground sm:block">
-                {idea.description}
-              </p>
+              </div>
+              <h2 className="mt-4 text-xl font-semibold tracking-tight text-foreground">
+                {item.headline}
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* Who Erth Is For */}
+      <section className="border-t border-border/60 bg-card/30">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
+          <Reveal className="space-y-4 sm:space-y-5">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              The missing home for travel memories.
+            </h2>
+            <p className="text-base leading-relaxed text-foreground/90">
+              Years after a trip, where does the story live?
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Maybe it is buried in your camera roll, mixed with duplicates, screenshots, and
+              forgotten videos. Maybe it became an Instagram post, filtered and compressed into
+              something made for likes. Or maybe it was never shared at all.
+            </p>
+            <p className="text-lg font-medium leading-relaxed text-foreground">
+              Instagram gives you the highlight. Your camera roll gives you the mess. Erth gives you
+              the map.
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Erth is the missing middle: a spatial home for the moments that shaped you.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      <section
+        id="vision"
+        tabIndex={-1}
+        className="scroll-mt-20 border-t border-border/60 focus:outline-none"
+      >
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
+          <Reveal className="space-y-4 sm:space-y-5">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              Your world should be visible.
+            </h2>
+            <p className="text-lg font-medium leading-relaxed text-foreground">
+              We believe travel is not just content. It is identity.
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              The places you visit, the people you go with, the memories you keep, and the stories
+              you bring back all become part of your world.
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Erth makes that world visible through a personal globe that grows with every journey.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       <section className="border-t border-border/60 bg-card/30">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
           <Reveal className="mb-10 max-w-2xl">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Who it's for
+              What it is built on
             </h2>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              Built for anyone who cares about the places and moments that shape a life, and for
-              those evaluating where the product is headed.
-            </p>
           </Reveal>
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {audiences.map((a, i) => (
+            {coreIdeas.map((idea, index) => (
               <Reveal
-                key={a.title}
-                delayMs={i * 70}
-                className="flex min-h-14 items-center gap-3 rounded-xl border border-border bg-card p-4 sm:items-start sm:gap-4 sm:rounded-2xl sm:p-6"
+                key={idea.title}
+                delayMs={index * 70}
+                className="rounded-xl border border-border bg-card p-5 sm:rounded-2xl sm:p-6"
               >
-                <a.icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
-                <div>
-                  <h3 className="text-base font-semibold text-foreground">{a.title}</h3>
-                  <p className="mt-1 hidden text-sm leading-relaxed text-muted-foreground sm:block">
-                    {a.description}
-                  </p>
-                </div>
+                <idea.icon className="size-6 text-primary" aria-hidden="true" />
+                <h3 className="mt-4 text-lg font-semibold text-foreground">{idea.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {idea.description}
+                </p>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Download */}
-      <section
-        id="download"
-        tabIndex={-1}
-        className="mx-auto max-w-6xl scroll-mt-20 px-4 py-14 focus:outline-none sm:py-20"
-      >
-        <Reveal className="mb-8 max-w-2xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Download the app
-          </h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-            Bring your world with you. Get the app on your phone to start mapping the places and
-            moments that matter.
-          </p>
-        </Reveal>
-        <Reveal>
-          <QrDownload />
-        </Reveal>
+      <section className="border-t border-border/60">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+          <Reveal className="mb-10 max-w-3xl">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              For people who collect places, not just photos.
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              Erth is for travelers, memory keepers, friend groups, and explorers who want their
+              experiences to live somewhere more meaningful than a feed or a folder.
+            </p>
+          </Reveal>
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+            {audiences.map((audience, index) => (
+              <Reveal
+                key={audience.title}
+                delayMs={index * 70}
+                className="rounded-xl border border-border bg-card p-5 sm:rounded-2xl sm:p-6"
+              >
+                <audience.icon className="size-5 text-primary" aria-hidden="true" />
+                <h3 className="mt-4 text-base font-semibold text-foreground">{audience.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {audience.description}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border/60 bg-card/30">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
+          <Reveal className="rounded-2xl border border-primary/25 bg-primary/[0.04] p-6 sm:p-8">
+            <div className="flex items-center gap-3">
+              <Beaker className="size-6 text-primary" aria-hidden="true" />
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                Private TestFlight Beta
+              </p>
+            </div>
+            <h2 className="mt-5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              Built carefully. Tested honestly.
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Erth is currently in private TestFlight beta. Our focus is simple: make sure people
+              can sign up, create memories, build trips, explore the globe, connect with friends,
+              and shape a travel identity that feels real.
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Feedback from early testers directly informs what we improve before opening Erth to
+              more people.
+            </p>
+            <Link
+              to="/contact/"
+              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Contact the team
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="border-t border-border/60">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
+          <Reveal className="text-center">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              Erth is in private beta.
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              We are testing the first version with a small group of early users through TestFlight.
+              For beta access, reviewer questions, partnerships, or product feedback, contact the
+              Erth team.
+            </p>
+            <Link
+              to="/contact/"
+              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Mail className="size-4" aria-hidden="true" />
+              Contact the team
+            </Link>
+            <p className="mt-4 text-sm text-muted-foreground">
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {CONTACT_EMAIL}
+              </a>
+            </p>
+          </Reveal>
+        </div>
       </section>
     </>
   );

@@ -44,17 +44,6 @@ export function absoluteUrl(path: string): string | null {
   return new URL(path.replace(/^\/+/, ""), origin + "/").toString();
 }
 
-/** Absolute download deep-link, or null when productionUrl is not configured. */
-export function getDownloadUrl(): string | null {
-  const origin = getProductionUrl();
-  if (!origin) return null;
-  return new URL("#download", origin + "/").toString();
-}
-
-export function hasRealStoreLinks(): boolean {
-  return Boolean(siteConfig.store.appStoreUrl || siteConfig.store.googlePlayUrl);
-}
-
 /** Real, fully-resolved team members only. */
 export function getPublishableTeam(): TeamMember[] {
   return siteConfig.team.filter((m) => !rawIsPlaceholderMember(m));

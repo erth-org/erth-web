@@ -1,91 +1,126 @@
-// Editorial copy for the Erth website.
-// No invented metrics, testimonials, partnerships, or usage numbers — only
-// vision-led, verifiable product language. Update as the product evolves.
+// Approved public marketing copy for the Erth website.
+// Keep product claims aligned with the current private TestFlight beta.
 
 import {
+  Award,
   Compass,
-  Map as MapIcon,
+  Globe2,
+  Images,
+  MapPin,
+  Route,
+  Search,
+  ShieldCheck,
   Sparkles,
+  UserRound,
   Users,
-  Building2,
-  Briefcase,
-  ClipboardCheck,
-  LineChart,
   type LucideIcon,
 } from "lucide-react";
 
-export interface CoreIdea {
+export interface ProductTruth {
+  icon: LucideIcon;
+  label: string;
+  headline: string;
+  body: string;
+}
+
+export interface EditorialCard {
   icon: LucideIcon;
   title: string;
   description: string;
 }
 
-export interface Audience {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-}
-
-export const vision = {
-  problem:
-    "The moments and places that shape a life are scattered across camera rolls, chat threads, and fading memory. There is no calm, lasting home for the experiences that actually matter.",
-  why: "Where we go and what we experience is a meaningful part of who we are. Those stories deserve more than an algorithmic feed that disappears the moment you scroll past.",
-  future:
-    "Erth is building a living, personal map — a quiet place to capture experiences, see them in the context of the world, and revisit them over time.",
-  contribution:
-    "The app turns scattered moments into a coherent footprint you own: a clear, visual record of the places and experiences that define your world.",
-};
-
-export const coreIdeas: CoreIdea[] = [
+export const productTruths: ProductTruth[] = [
   {
-    icon: MapIcon,
-    title: "Place at the center",
-    description:
-      "Experiences are anchored to where they happened, so your story unfolds across a real map rather than an endless timeline.",
+    icon: Globe2,
+    label: "Your Globe",
+    headline: "A world shaped by where you have been.",
+    body: "Every place you capture becomes part of a personal globe that grows with your journeys.",
   },
   {
-    icon: Sparkles,
-    title: "Moments that last",
-    description:
-      "Erth is built for keeping, not chasing reach. The things you capture are meant to be revisited, not buried.",
+    icon: MapPin,
+    label: "Your Memories",
+    headline: "The context behind every trip.",
+    body: "Keep moments connected to where they happened, who was there, and why they mattered.",
   },
   {
-    icon: Compass,
-    title: "Yours to own",
-    description:
-      "Your footprint belongs to you — a personal record you shape deliberately, with control over what you keep and share.",
+    icon: UserRound,
+    label: "Your Travel Identity",
+    headline: "More than a profile.",
+    body: "Share the world you are building through real experiences, not only polished highlights.",
   },
 ];
 
-export const audiences: Audience[] = [
+export const coreIdeas: EditorialCard[] = [
+  {
+    icon: Globe2,
+    title: "A living personal globe",
+    description:
+      "Your profile is a 3D world shaped by the places you have been and the memories you choose to keep.",
+  },
+  {
+    icon: Images,
+    title: "Moments with context",
+    description:
+      "Memories stay connected to location, date, trip, and people, so they are easy to revisit years later.",
+  },
+  {
+    icon: Route,
+    title: "Trips as stories",
+    description:
+      "Group moments into complete adventures instead of leaving them as scattered photos or isolated posts.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Social without the performance",
+    description:
+      "Share real travel context with friends. You decide what stays private, what you share, and what becomes public.",
+  },
+  {
+    icon: Compass,
+    title: "Explore real journeys",
+    description:
+      "Discover travel inspiration through people's actual trips and memories, not generic lists or anonymous recommendations.",
+  },
+  {
+    icon: Award,
+    title: "Progress that feels earned",
+    description:
+      "Zenith adds badges and milestones that celebrate how your personal world grows over time.",
+  },
+];
+
+export const audiences: EditorialCard[] = [
+  {
+    icon: Compass,
+    title: "Travelers",
+    description: "For people who want every journey to become part of a visible personal world.",
+  },
+  {
+    icon: Images,
+    title: "Memory keepers",
+    description:
+      "For people who care about the real story behind a trip: the place, the people, the timing, and the feeling.",
+  },
   {
     icon: Users,
-    title: "People",
+    title: "Friend groups",
     description:
-      "Anyone who wants a calm, lasting way to capture where they have been and what mattered along the way.",
+      "For groups who want shared adventures to stay connected instead of disappearing across chats and galleries.",
   },
   {
-    icon: Building2,
-    title: "Communities",
-    description:
-      "Groups that want to record shared experiences and the places that bring them together.",
+    icon: Search,
+    title: "Future explorers",
+    description: "For anyone looking for inspiration through real journeys from real people.",
   },
   {
-    icon: Briefcase,
-    title: "Partners",
-    description:
-      "Organizations exploring thoughtful, place-based ways to connect with the people they serve.",
+    icon: Sparkles,
+    title: "Private beta testers",
+    description: "For early users helping us test the fundamentals before Erth opens more widely.",
   },
   {
-    icon: ClipboardCheck,
-    title: "Program reviewers",
+    icon: ShieldCheck,
+    title: "Reviewers",
     description:
-      "Reviewers who need a clear, honest picture of what Erth is, the problem it addresses, and where it is headed.",
-  },
-  {
-    icon: LineChart,
-    title: "Investors",
-    description:
-      "Partners who want to understand the vision, the product direction, and the long-term opportunity behind Erth.",
+      "For people evaluating the product vision, current beta scope, and long-term direction.",
   },
 ];

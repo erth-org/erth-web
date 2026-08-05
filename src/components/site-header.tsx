@@ -1,16 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  Download,
-  FileText,
-  Flag,
-  Home,
-  Info,
-  Mail,
-  Menu,
-  Newspaper,
-  Sparkles,
-} from "lucide-react";
+import { Beaker, FileText, Home, Info, Mail, Menu, Sparkles } from "lucide-react";
 import { ErthLogo } from "@/components/erth-logo";
 import {
   Sheet,
@@ -21,12 +11,11 @@ import {
 } from "@/components/ui/sheet";
 
 const primaryNav = [
-  { label: "Features", to: "/features" as const, icon: Sparkles },
-  { label: "Updates", to: "/updates" as const, icon: Newspaper },
-  { label: "About", to: "/about" as const, icon: Info },
-  { label: "Report", to: "/report" as const, icon: Flag },
-  { label: "Contact", to: "/contact" as const, icon: Mail },
-  { label: "Legal", to: "/legal" as const, icon: FileText },
+  { label: "Features", to: "/features/" as const, icon: Sparkles },
+  { label: "Testing", to: "/testing/" as const, icon: Beaker },
+  { label: "About", to: "/about/" as const, icon: Info },
+  { label: "Contact", to: "/contact/" as const, icon: Mail },
+  { label: "Legal", to: "/legal/" as const, icon: FileText },
 ];
 
 export function SiteHeader() {
@@ -59,11 +48,10 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link
-            to="/"
-            hash="download"
+            to="/testing/"
             className="ml-1 inline-flex min-h-11 items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            Download
+            Private Beta
           </Link>
         </nav>
 
@@ -121,13 +109,12 @@ export function SiteHeader() {
           </nav>
 
           <Link
-            to="/"
-            hash="download"
+            to="/testing/"
             onClick={() => setOpen(false)}
             className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Download className="size-4" aria-hidden="true" />
-            Download
+            <Beaker className="size-4" aria-hidden="true" />
+            Private Beta
           </Link>
         </SheetContent>
       </Sheet>
