@@ -43,11 +43,16 @@ function FeaturesPage() {
             <Reveal
               key={feature.id}
               delayMs={index * 60}
-              className={`scroll-mt-24 rounded-xl border border-border bg-card p-5 sm:rounded-2xl sm:p-6 ${
+              className={`rounded-xl border border-border bg-card p-5 sm:rounded-2xl sm:p-6 ${
                 feature.id === "zenith" ? "lg:col-start-2" : ""
               }`}
             >
-              <article id={feature.id} aria-labelledby={`feature-${feature.id}-title`}>
+              <article
+                id={feature.id}
+                tabIndex={-1}
+                aria-labelledby={`feature-${feature.id}-title`}
+                className="scroll-mt-24 focus:outline-none"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-primary">
                     {String(index + 1).padStart(2, "0")}

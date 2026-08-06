@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { DevPlaceholderBanner } from "@/components/dev-placeholder-banner";
+import { HashNavigationFocus } from "@/components/hash-navigation-focus";
 import { SkyMotion } from "@/components/sky-motion";
 import { withBasePath } from "@/lib/asset-path";
 import { siteConfig, getProductionUrl, absoluteUrl } from "@/lib/site-config";
@@ -185,6 +186,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <DevPlaceholderBanner />
+      <HashNavigationFocus />
       <div className="erth-site-shell flex min-h-screen flex-col">
         <div className="erth-visible-stars" aria-hidden="true" />
         <SkyMotion />

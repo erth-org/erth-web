@@ -9,6 +9,7 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
+    defaultHashScrollIntoView: { behavior: "auto", block: "start" },
     trailingSlash: "always",
     defaultPreloadStaleTime: 0,
   });

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { siteConfig } from "@/lib/site-config";
 
 export interface LegalSection {
@@ -46,12 +47,13 @@ export function LegalLayout({
           <ul className="grid grid-cols-2 gap-2 sm:block sm:space-y-2">
             {sections.map((s) => (
               <li key={s.id}>
-                <a
-                  href={`#${s.id}`}
+                <Link
+                  to="/legal/"
+                  hash={s.id}
                   className="block rounded-md py-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {s.heading}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -60,7 +62,7 @@ export function LegalLayout({
 
       <div className="space-y-10">
         {sections.map((s) => (
-          <section key={s.id} id={s.id} className="scroll-mt-24">
+          <section key={s.id} id={s.id} tabIndex={-1} className="scroll-mt-24 focus:outline-none">
             <h2 className="text-xl font-semibold text-foreground">{s.heading}</h2>
             <div className="mt-3 space-y-4 text-sm leading-relaxed text-muted-foreground">
               {s.body}

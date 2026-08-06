@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { ArrowRight, Beaker, Mail } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
 import { productTruths, coreIdeas, audiences } from "@/lib/erth-content";
@@ -20,34 +19,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-function useVisionHash() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    let raf = 0;
-    const focusVision = () => {
-      if (window.location.hash !== "#vision") return;
-      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-      raf = window.requestAnimationFrame(() => {
-        const section = document.getElementById("vision");
-        if (!section) return;
-        section.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-        section.focus({ preventScroll: true });
-      });
-    };
-
-    focusVision();
-    window.addEventListener("hashchange", focusVision);
-    return () => {
-      window.cancelAnimationFrame(raf);
-      window.removeEventListener("hashchange", focusVision);
-    };
-  }, []);
-}
-
 function HomePage() {
-  useVisionHash();
-
   return (
     <>
       <section className="relative overflow-hidden">
@@ -73,11 +45,6 @@ function HomePage() {
                 <Link
                   to="/"
                   hash="vision"
-                  onClick={() => {
-                    window.requestAnimationFrame(() => {
-                      document.getElementById("vision")?.focus({ preventScroll: true });
-                    });
-                  }}
                   className="inline-flex min-h-11 w-full max-w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
                 >
                   Explore the vision
@@ -155,7 +122,7 @@ function HomePage() {
       <section
         id="vision"
         tabIndex={-1}
-        className="scroll-mt-20 border-t border-border/60 focus:outline-none"
+        className="scroll-mt-24 border-t border-border/60 focus:outline-none"
       >
         <div className="mx-auto max-w-3xl px-4 py-14 sm:py-20">
           <Reveal className="space-y-4 sm:space-y-5">
