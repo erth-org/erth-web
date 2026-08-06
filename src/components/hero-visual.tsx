@@ -2,6 +2,16 @@ import { createElement, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { withBasePath } from "@/lib/asset-path";
 
+const MOBILE_MEDIA_QUERY = "(max-width: 639px)";
+
+function clamp(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
+
+function smoothstep(value: number) {
+  return value * value * (3 - 2 * value);
+}
+
 export function HeroVisual({ className }: { className?: string }) {
   const [reduceMotion, setReduceMotion] = useState(false);
   const visualRef = useRef<HTMLDivElement | null>(null);
@@ -51,36 +61,83 @@ export function HeroVisual({ className }: { className?: string }) {
 
     if (reduceMotion) {
       node.style.transform = "none";
-      node.style.opacity = "1";
       node.style.willChange = "auto";
       return;
     }
 
-    let frame = 0;
-    const clamp = (value: number) => Math.min(1, Math.max(0, value));
-    node.style.willChange = "transform";
+    const mobileQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
+    let animationFrame = 0;
+    let lastFrameTime = 0;
+    let currentScale = 1;
+    let currentOffset = 0;
+    let targetScale = 1;
+    let targetOffset = 0;
 
-    const update = () => {
-      frame = 0;
-      const distance = Math.max(1, window.innerHeight * 0.72);
-      const progress = clamp(window.scrollY / distance);
-      const scale = 1 - progress * 0.2;
+    const setTargets = () => {
+      const isMobile = mobileQuery.matches;
+      const distance = Math.max(1, window.innerHeight * (isMobile ? 0.95 : 0.8));
+      const progress = smoothstep(clamp(window.scrollY / distance));
 
-      node.style.transform = `translate3d(0, 0, 0) scale(${scale})`;
+      // A restrained range keeps the large mobile canvas feeling grounded while
+      // still giving the hero some depth as it leaves the viewport.
+      targetScale = 1 - progress * (isMobile ? 0.065 : 0.16);
+      targetOffset = isMobile ? progress * -8 : 0;
     };
 
-    const scheduleUpdate = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(update);
+    const applyTransform = () => {
+      node.style.transform = `translate3d(0, ${currentOffset.toFixed(3)}px, 0) scale(${currentScale.toFixed(5)})`;
     };
 
-    update();
-    window.addEventListener("scroll", scheduleUpdate, { passive: true });
-    window.addEventListener("resize", scheduleUpdate);
+    const animate = (time: number) => {
+      const elapsed = lastFrameTime ? Math.min(time - lastFrameTime, 64) : 16;
+      lastFrameTime = time;
+
+      // Time-based damping is consistent across 60Hz and 120Hz mobile screens.
+      const damping = 1 - Math.exp(-elapsed / (mobileQuery.matches ? 105 : 80));
+      currentScale += (targetScale - currentScale) * damping;
+      currentOffset += (targetOffset - currentOffset) * damping;
+      applyTransform();
+
+      const settled =
+        Math.abs(targetScale - currentScale) < 0.0001 &&
+        Math.abs(targetOffset - currentOffset) < 0.02;
+
+      if (settled) {
+        currentScale = targetScale;
+        currentOffset = targetOffset;
+        applyTransform();
+        animationFrame = 0;
+        lastFrameTime = 0;
+        node.style.willChange = "auto";
+        return;
+      }
+
+      animationFrame = window.requestAnimationFrame(animate);
+    };
+
+    const startAnimation = () => {
+      setTargets();
+      if (animationFrame) return;
+      node.style.willChange = "transform";
+      animationFrame = window.requestAnimationFrame(animate);
+    };
+
+    const resetForViewport = () => {
+      setTargets();
+      currentScale = targetScale;
+      currentOffset = targetOffset;
+      applyTransform();
+    };
+
+    resetForViewport();
+    window.addEventListener("scroll", startAnimation, { passive: true });
+    window.addEventListener("resize", resetForViewport);
+    mobileQuery.addEventListener?.("change", resetForViewport);
     return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", scheduleUpdate);
-      window.removeEventListener("resize", scheduleUpdate);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", startAnimation);
+      window.removeEventListener("resize", resetForViewport);
+      mobileQuery.removeEventListener?.("change", resetForViewport);
       node.style.willChange = "auto";
     };
   }, [reduceMotion]);
