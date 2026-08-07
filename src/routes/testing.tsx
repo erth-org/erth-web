@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
+  ArrowRight,
   Beaker,
   Globe2,
   Images,
@@ -64,7 +65,7 @@ function TestingPage() {
     <>
       <section className="relative overflow-hidden">
         <StarBackdrop />
-        <div className="relative mx-auto max-w-4xl px-4 pt-12 pb-12 sm:pt-28 sm:pb-20">
+        <div className="relative mx-auto max-w-5xl px-4 pt-12 pb-14 sm:pt-28 sm:pb-24">
           <Reveal className="space-y-4 text-center sm:space-y-5">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
               Private Beta
@@ -76,6 +77,19 @@ function TestingPage() {
               Erth is currently in private TestFlight beta. We are testing the core experience with
               a small group of early users before opening the app more widely.
             </p>
+            <div className="flex flex-col items-center pt-2 sm:pt-3">
+              <Link
+                to="/testing/guide/"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/15 transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-primary/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transform-none sm:w-auto"
+              >
+                <Beaker className="size-4" aria-hidden="true" />
+                Start guided beta test
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                10 guided steps · optional feedback log · saves locally
+              </p>
+            </div>
           </Reveal>
         </div>
       </section>
@@ -119,13 +133,25 @@ function TestingPage() {
               experience feels clear, where you get stuck, and whether the idea of building a
               personal travel globe feels meaningful after using it.
             </p>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Mail className="size-4" aria-hidden="true" />
-              Send feedback
-            </a>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <Link
+                to="/testing/guide/"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-primary/35 bg-primary/[0.06] px-5 py-3 text-sm font-medium text-primary transition-colors hover:border-primary/60 hover:bg-primary/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Open tester guide
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border bg-background px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Mail className="size-4" aria-hidden="true" />
+                Email the team
+              </a>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              The guide saves progress in this browser and never submits answers automatically.
+            </p>
           </Reveal>
 
           <Reveal delayMs={90} className="rounded-2xl border border-border bg-card p-6 sm:p-8">

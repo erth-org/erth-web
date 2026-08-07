@@ -48,7 +48,7 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link
-            to="/testing/"
+            to="/testing/guide/"
             className="ml-1 inline-flex min-h-11 items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Private Beta
@@ -109,7 +109,7 @@ export function SiteHeader() {
           </nav>
 
           <Link
-            to="/testing/"
+            to="/testing/guide/"
             onClick={() => setOpen(false)}
             className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
