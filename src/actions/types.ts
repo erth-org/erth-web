@@ -1,0 +1,16 @@
+export const SET_GUIDE_STAGE = "SET_GUIDE_STAGE" as const;
+export const UPDATE_TESTER_DETAILS = "UPDATE_TESTER_DETAILS" as const;
+export const SET_SHARING_ACKNOWLEDGEMENT = "SET_SHARING_ACKNOWLEDGEMENT" as const;
+export const TOGGLE_GUIDE_TASK = "TOGGLE_GUIDE_TASK" as const;
+export const SET_MISSION_STATUS = "SET_MISSION_STATUS" as const;
+export const SET_MISSION_RATING = "SET_MISSION_RATING" as const;
+export const SET_MISSION_NOTES = "SET_MISSION_NOTES" as const;
+export const ADD_GUIDE_ISSUE = "ADD_GUIDE_ISSUE" as const;
+export const UPDATE_GUIDE_ISSUE = "UPDATE_GUIDE_ISSUE" as const;
+export const REMOVE_GUIDE_ISSUE = "REMOVE_GUIDE_ISSUE" as const;
+export const UPDATE_GUIDE_REFLECTION = "UPDATE_GUIDE_REFLECTION" as const;
+export const RESET_TESTER_GUIDE = "RESET_TESTER_GUIDE" as const;
+export const GUIDE_HANDOFF_REQUEST = "GUIDE_HANDOFF_REQUEST" as const;
+export const GUIDE_HANDOFF_SUCCESS = "GUIDE_HANDOFF_SUCCESS" as const;
+export const GUIDE_HANDOFF_FAILURE = "GUIDE_HANDOFF_FAILURE" as const;
+export const CLEAR_GUIDE_HANDOFF = "CLEAR_GUIDE_HANDOFF" as const;

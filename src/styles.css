@@ -141,6 +141,30 @@
   }
 }
 
+@media print {
+  .erth-site-shell > header,
+  .erth-site-shell > footer,
+  .erth-visible-stars,
+  .tester-guide-no-print {
+    display: none !important;
+  }
+
+  .tester-guide-print,
+  .tester-guide-print section {
+    background: #ffffff !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+  }
+
+  .tester-guide-print {
+    overflow: visible !important;
+  }
+
+  .tester-guide-print main {
+    width: 100% !important;
+  }
+}
+
 /* ---------------------------------------------------------------- */
 /* Star backdrop — lightweight, CSS-only.                           */
 /* Two stacked layers of small radial gradients give the illusion   */
