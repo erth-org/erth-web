@@ -102,11 +102,13 @@
   }
   html {
     scroll-behavior: smooth;
+    overscroll-behavior-y: none;
   }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     background: var(--background);
+    overscroll-behavior-y: none;
   }
   h1,
   h2,

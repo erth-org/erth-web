@@ -1,5 +1,4 @@
-// Approved public marketing copy for the Erth website.
-// Keep product claims aligned with the current private TestFlight beta.
+// Approved product copy shared by the beta-purpose and live marketing surfaces.
 
 import {
   Award,

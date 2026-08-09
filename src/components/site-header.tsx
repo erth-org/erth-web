@@ -1,6 +1,18 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Beaker, FileText, Home, Info, Mail, Menu, Sparkles } from "lucide-react";
+import {
+  BookOpenCheck,
+  FileText,
+  Home,
+  Info,
+  LockKeyhole,
+  Mail,
+  Menu,
+  MessageSquareWarning,
+  Newspaper,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
 import { ErthLogo } from "@/components/erth-logo";
 import {
   Sheet,
@@ -9,17 +21,74 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { isBetaMode } from "@/lib/site-mode";
 
-const primaryNav = [
-  { label: "Features", to: "/features/" as const, icon: Sparkles },
-  { label: "Testing", to: "/testing/" as const, icon: Beaker },
-  { label: "About", to: "/about/" as const, icon: Info },
-  { label: "Contact", to: "/contact/" as const, icon: Mail },
-  { label: "Legal", to: "/legal/" as const, icon: FileText },
+interface NavigationItem {
+  label: string;
+  to: "/features/" | "/updates/" | "/about/" | "/contact/" | "/report/" | "/legal/";
+  icon: LucideIcon;
+}
+
+const BETA_NAVIGATION: ReadonlyArray<NavigationItem> = [
+  { label: "Report an issue", to: "/report/", icon: MessageSquareWarning },
+];
+
+const LIVE_NAVIGATION: ReadonlyArray<NavigationItem> = [
+  { label: "Features", to: "/features/", icon: Sparkles },
+  { label: "Updates", to: "/updates/", icon: Newspaper },
+  { label: "About", to: "/about/", icon: Info },
+  { label: "Contact", to: "/contact/", icon: Mail },
+  { label: "Legal", to: "/legal/", icon: FileText },
 ];
 
 export function SiteHeader() {
+  return isBetaMode() ? <BetaSiteHeader /> : <LiveSiteHeader />;
+}
+
+function BetaSiteHeader() {
+  return (
+    <SiteHeaderLayout
+      navigation={BETA_NAVIGATION}
+      menuDescription="Closed beta tester resources."
+      status={
+        <span className="inline-flex min-h-9 items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.06] px-3 text-xs font-medium text-foreground">
+          <LockKeyhole className="size-3.5 text-primary" aria-hidden="true" />
+          Closed beta · invited testers
+        </span>
+      }
+      action={{
+        label: "Open tester guide",
+        to: "/testing/guide/",
+        icon: BookOpenCheck,
+      }}
+    />
+  );
+}
+
+function LiveSiteHeader() {
+  return (
+    <SiteHeaderLayout
+      navigation={LIVE_NAVIGATION}
+      menuDescription="Erth product and company navigation."
+      action={{ label: "Explore features", to: "/features/", icon: Sparkles }}
+    />
+  );
+}
+
+interface HeaderLayoutProps {
+  navigation: ReadonlyArray<NavigationItem>;
+  menuDescription: string;
+  status?: React.ReactNode;
+  action: {
+    label: string;
+    to: "/testing/guide/" | "/features/";
+    icon: LucideIcon;
+  };
+}
+
+function SiteHeaderLayout({ navigation, menuDescription, status, action }: HeaderLayoutProps) {
   const [open, setOpen] = useState(false);
+  const ActionIcon = action.icon;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -27,31 +96,30 @@ export function SiteHeader() {
         <Link
           to="/"
           className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Home"
+          aria-label="Erth home"
         >
           <ErthLogo />
         </Link>
 
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
-          {primaryNav.map((item) => (
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+          {status}
+          {navigation.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              activeProps={{
-                className: "text-foreground",
-                "aria-current": "page",
-              }}
+              activeProps={{ className: "text-foreground", "aria-current": "page" }}
               inactiveProps={{ className: "text-muted-foreground" }}
-              className="rounded-md px-2 py-2 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring xl:px-3"
+              className="rounded-md px-3 py-2 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
             </Link>
           ))}
           <Link
-            to="/testing/guide/"
-            className="ml-1 inline-flex min-h-11 items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            to={action.to}
+            className="ml-1 inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            Private Beta
+            <ActionIcon className="size-4" aria-hidden="true" />
+            {action.label}
           </Link>
         </nav>
 
@@ -63,7 +131,7 @@ export function SiteHeader() {
           aria-label="Open menu"
           onClick={() => setOpen(true)}
         >
-          <Menu className="size-5" />
+          <Menu className="size-5" aria-hidden="true" />
         </button>
       </div>
 
@@ -75,11 +143,11 @@ export function SiteHeader() {
         >
           <SheetHeader className="mb-4 pr-8 text-left">
             <SheetTitle className="sr-only">Site menu</SheetTitle>
-            <SheetDescription className="sr-only">
-              Primary Erth website navigation links.
-            </SheetDescription>
+            <SheetDescription className="sr-only">{menuDescription}</SheetDescription>
             <ErthLogo />
           </SheetHeader>
+
+          {status ? <div className="mb-4 flex">{status}</div> : null}
 
           <nav className="flex flex-1 flex-col gap-1" aria-label="Mobile">
             <Link
@@ -93,7 +161,7 @@ export function SiteHeader() {
               <Home className="size-4 shrink-0 text-primary" aria-hidden="true" />
               Home
             </Link>
-            {primaryNav.map((item) => (
+            {navigation.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
@@ -109,12 +177,12 @@ export function SiteHeader() {
           </nav>
 
           <Link
-            to="/testing/guide/"
+            to={action.to}
             onClick={() => setOpen(false)}
             className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Beaker className="size-4" aria-hidden="true" />
-            Private Beta
+            <ActionIcon className="size-4" aria-hidden="true" />
+            {action.label}
           </Link>
         </SheetContent>
       </Sheet>

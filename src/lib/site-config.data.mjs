@@ -6,6 +6,11 @@
 export const PLACEHOLDER = "__PLACEHOLDER__";
 
 export const siteConfigData = {
+  // Switch this single value to "live" when the public application launches.
+  // Beta mode intentionally exposes only the tester guide, issue reporting,
+  // product purpose, and required legal information.
+  siteMode: "beta",
+
   productionUrl: "https://erth-org.github.io/erth-web/",
 
   oneLiner: "Erth turns trips, moments, and memories into a living globe of your travel identity.",
@@ -63,6 +68,15 @@ export function isPlaceholderTeamMember(m) {
 export function getUnresolvedPlaceholders(cfg = siteConfigData) {
   const issues = [];
 
+  if (cfg.siteMode !== "beta" && cfg.siteMode !== "live") {
+    issues.push('siteMode must be either "beta" or "live"');
+  }
+  if (cfg.siteMode === "live" && cfg.legal.status !== "approved") {
+    issues.push('siteMode is "live" but legal.status is not "approved"');
+  }
+  if (cfg.siteMode === "live" && !cfg.store.appStoreUrl && !cfg.store.googlePlayUrl) {
+    issues.push('siteMode is "live" but no public store URL is configured');
+  }
   if (!cfg.productionUrl) issues.push("productionUrl is not set");
   if (!cfg.contact.email) issues.push("contact.email is not set");
   if (cfg.legal.status === "approved") {

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { LegalLayout } from "@/components/legal-layout";
+import { isBetaMode } from "@/lib/site-mode";
 
 export const Route = createFileRoute("/legal")({
   head: () =>
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/legal")({
 
 function LegalPage() {
   const contactEmail = siteConfig.contact.email;
+  const betaMode = isBetaMode();
 
   return (
     <LegalLayout
@@ -22,15 +24,17 @@ function LegalPage() {
       intro={
         <div className="space-y-4">
           <p className="text-base text-foreground/90">
-            Final legal documents are being prepared for Erth's private beta and wider release.
+            {betaMode
+              ? "Final legal documents are being prepared for Erth's closed beta and wider release."
+              : "Erth's legal documents and notices are published here."}
           </p>
           <p>
             This page will contain Erth's Privacy Policy, Terms and Conditions, and related notices.
           </p>
           <p>
-            Because Erth is currently in private TestFlight beta, final public legal copy is still
-            pending review. For questions about privacy, data handling, or beta participation,
-            contact the Erth team directly.
+            {betaMode
+              ? "Because Erth is currently in a closed beta, final public legal copy is still pending review. For questions about privacy, data handling, or beta participation, contact the Erth team directly."
+              : "Review the current policies and notices that apply to the Erth service. For questions about privacy or data handling, contact the Erth team directly."}
           </p>
           <p>
             <a

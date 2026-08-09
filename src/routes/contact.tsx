@@ -1,17 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Beaker, Mail, MessageSquareText } from "lucide-react";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { Mail, MessageSquareWarning } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
 import { StarBackdrop } from "@/components/star-backdrop";
+import { isBetaMode } from "@/lib/site-mode";
 
 const CONTACT_EMAIL = "erthteamtesting@gmail.com";
 
 export const Route = createFileRoute("/contact")({
+  beforeLoad: () => {
+    if (isBetaMode()) throw redirect({ to: "/" });
+  },
   head: () =>
     buildPageHead({
       title: "Contact - Erth",
       description:
-        "Contact the Erth team about the private beta, product feedback, partnerships, or reviewer questions.",
+        "Contact the Erth team with general questions, partnerships, or product feedback.",
       path: "/contact",
     }),
   component: ContactPage,
@@ -24,14 +28,9 @@ const contactCards = [
     icon: Mail,
   },
   {
-    title: "Private beta",
-    body: "Erth is currently being tested through TestFlight with a small group of early users.",
-    icon: Beaker,
-  },
-  {
-    title: "What to send",
-    body: "Tell us who you are, what you are interested in, and whether your message is about testing, feedback, review, partnership, or general product questions.",
-    icon: MessageSquareText,
+    title: "App feedback",
+    body: "Use the structured issue report for bugs, complaints, confusing interactions, and feature problems.",
+    icon: MessageSquareWarning,
   },
 ];
 
@@ -49,15 +48,15 @@ function ContactPage() {
               Talk to the Erth team.
             </h1>
             <p className="text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
-              Questions about the private beta, product feedback, partnerships, or reviewer access
-              can be sent directly to the team.
+              General product or partnership questions can be sent directly to the team. Product
+              feedback belongs in the dedicated report flow.
             </p>
           </Reveal>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-16 sm:pb-24">
-        <div className="grid gap-3 sm:gap-6 md:grid-cols-3">
+        <div className="grid gap-3 sm:gap-6 md:grid-cols-2">
           {contactCards.map((card, index) => (
             <Reveal
               key={card.title}
@@ -85,8 +84,8 @@ function ContactPage() {
             Send the Erth team a message.
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Questions about the private beta, product feedback, partnerships, or reviewer access can
-            be sent directly to the team.
+            For general questions, email the team. If your message is about the app experience, use
+            the issue report so the details arrive in a consistent format.
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
@@ -95,6 +94,13 @@ function ContactPage() {
             <Mail className="size-4" aria-hidden="true" />
             Contact the team
           </a>
+          <Link
+            to="/report/"
+            className="ml-0 mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:ml-2 sm:mt-6"
+          >
+            <MessageSquareWarning className="size-4" aria-hidden="true" />
+            Report an app issue
+          </Link>
         </Reveal>
       </section>
     </>

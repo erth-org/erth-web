@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ThumbsUp } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
@@ -7,6 +7,7 @@ import { getFeedbackBySlug } from "@/content/public-feedback";
 import { getReleaseBySlug } from "@/content/updates";
 import { siteConfig } from "@/lib/site-config";
 import { FEEDBACK_TYPE_LABEL } from "@/lib/public-content-types";
+import { isBetaMode } from "@/lib/site-mode";
 
 const ROADMAP_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -16,6 +17,9 @@ const ROADMAP_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
 });
 
 export const Route = createFileRoute("/report/$slug")({
+  beforeLoad: () => {
+    if (isBetaMode()) throw redirect({ to: "/report/" });
+  },
   loader: ({ params }): import("@/lib/public-content-types").PublicFeedbackItem => {
     const item = getFeedbackBySlug(params.slug);
     if (!item) throw notFound();

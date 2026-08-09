@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
@@ -6,6 +6,7 @@ import { PlatformBadges } from "@/components/platform-badges";
 import { ScreenshotFrame } from "@/components/screenshot-frame";
 import { getReleaseBySlug } from "@/content/updates";
 import type { ReleaseChange } from "@/lib/public-content-types";
+import { isBetaMode } from "@/lib/site-mode";
 
 const RELEASE_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -15,6 +16,9 @@ const RELEASE_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
 });
 
 export const Route = createFileRoute("/updates/$slug")({
+  beforeLoad: () => {
+    if (isBetaMode()) throw redirect({ to: "/" });
+  },
   loader: ({ params }) => {
     const release = getReleaseBySlug(params.slug);
     if (!release) throw notFound();

@@ -1,10 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Beaker, Compass, Eye, History, ShieldCheck, UserRound } from "lucide-react";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Compass, Eye, Globe2, History, ShieldCheck, UserRound } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
 import { StarBackdrop } from "@/components/star-backdrop";
+import { isBetaMode } from "@/lib/site-mode";
 
 export const Route = createFileRoute("/about")({
+  beforeLoad: () => {
+    if (isBetaMode()) throw redirect({ to: "/" });
+  },
   head: () =>
     buildPageHead({
       title: "About - Erth",
@@ -37,9 +41,9 @@ const principles = [
     icon: ShieldCheck,
   },
   {
-    title: "Honest beta learning",
-    body: "We are testing with real users before wider release so the product is shaped by actual behavior, not assumptions.",
-    icon: Beaker,
+    title: "Built through real use",
+    body: "The product evolves through how travelers actually use it, so decisions stay grounded in behavior rather than assumptions.",
+    icon: Globe2,
   },
   {
     title: "Wonder with clarity",
@@ -50,19 +54,19 @@ const principles = [
 
 const currentState = [
   {
-    label: "Private beta",
-    title: "Testing the first complete experience",
-    body: "Erth is currently available to a small group of testers through TestFlight.",
+    label: "The product",
+    title: "A living home for travel identity",
+    body: "Erth connects memories, trips, people, and place through a personal globe.",
   },
   {
-    label: "Core flows",
-    title: "Focused on the fundamentals",
-    body: "The beta tests sign up, profile creation, moments, trips, globe exploration, social follow flows, and navigation.",
+    label: "Core experience",
+    title: "Designed around the journey",
+    body: "Profiles, moments, trips, globe exploration, and social connections work as one travel story.",
   },
   {
-    label: "Next step",
-    title: "Learning before wider release",
-    body: "Feedback from testers helps us improve reliability, clarity, and the feeling of building a travel identity.",
+    label: "What comes next",
+    title: "Growing with traveler feedback",
+    body: "Real-world feedback continues to improve reliability, clarity, and the feeling of building a travel identity.",
   },
 ];
 
@@ -89,8 +93,8 @@ function AboutPage() {
               and people stay connected to the places where they happened.
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Erth is still early, and that is intentional. We are testing the first version
-              carefully with a small private beta before opening it more widely.
+              Erth is built carefully and continues to evolve through the real experiences of the
+              people using it.
             </p>
           </Reveal>
         </div>
@@ -125,7 +129,7 @@ function AboutPage() {
         <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
           <Reveal className="mb-10 max-w-2xl">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Where Erth is now
+              How Erth comes together
             </h2>
           </Reveal>
           <div className="grid gap-3 md:grid-cols-3 md:gap-6">

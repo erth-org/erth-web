@@ -15,7 +15,6 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { DevPlaceholderBanner } from "@/components/dev-placeholder-banner";
 import { HashNavigationFocus } from "@/components/hash-navigation-focus";
-import { SkyMotion } from "@/components/sky-motion";
 import { withBasePath } from "@/lib/asset-path";
 import { siteConfig, getProductionUrl, absoluteUrl } from "@/lib/site-config";
 
@@ -189,7 +188,6 @@ function RootComponent() {
       <HashNavigationFocus />
       <div className="erth-site-shell flex min-h-screen flex-col">
         <div className="erth-visible-stars" aria-hidden="true" />
-        <SkyMotion />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:outline-none"

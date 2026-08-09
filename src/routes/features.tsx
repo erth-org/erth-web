@@ -1,16 +1,20 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
 import { StarBackdrop } from "@/components/star-backdrop";
 import { features } from "@/content/features";
+import { isBetaMode } from "@/lib/site-mode";
 
 export const Route = createFileRoute("/features")({
+  beforeLoad: () => {
+    if (isBetaMode()) throw redirect({ to: "/" });
+  },
   head: () =>
     buildPageHead({
       title: "Features - Erth",
       description:
-        "Explore Erth's core private beta features: a living personal globe, spatial memories, trips, social travel context, discovery, and light progress through Zenith.",
+        "Explore Erth's core features: a living personal globe, spatial memories, trips, social travel context, discovery, and light progress through Zenith.",
       path: "/features",
     }),
   component: FeaturesPage,
@@ -24,14 +28,14 @@ function FeaturesPage() {
         <div className="relative mx-auto max-w-4xl px-4 pt-12 pb-12 sm:pt-28 sm:pb-20">
           <Reveal className="space-y-4 text-center sm:space-y-5">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
-              Core Beta Features
+              Core Features
             </p>
             <h1 className="text-balance text-[2.15rem] font-semibold leading-[1.06] tracking-tight text-foreground sm:text-5xl md:text-6xl">
               The foundations of your travel identity.
             </h1>
             <p className="mx-auto max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-lg">
               Erth is built around a simple idea: your memories should live where they happened. The
-              private beta focuses on the core flows that make that possible.
+              product connects the core flows that make that possible.
             </p>
           </Reveal>
         </div>
@@ -78,17 +82,17 @@ function FeaturesPage() {
         <div className="mx-auto max-w-3xl px-4 py-12 text-center sm:py-16">
           <Reveal>
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Currently in private TestFlight beta.
+              Build a travel identity you can revisit.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              The first version of Erth is being tested with early users. The focus is reliability,
-              navigation, content creation, globe exploration, and meaningful feedback.
+              Explore how memories, trips, people, and places come together across the Erth
+              experience.
             </p>
             <Link
-              to="/testing/"
+              to="/about/"
               className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              Learn about testing
+              Learn about Erth
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </Reveal>

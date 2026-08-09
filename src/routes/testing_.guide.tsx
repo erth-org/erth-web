@@ -1,9 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { TesterGuideExperience } from "@/components/testing-guide/tester-guide-experience";
 import { TesterGuideProvider } from "@/components/testing-guide/tester-guide-provider";
 import { buildPageHead } from "@/lib/seo";
+import { isLiveMode } from "@/lib/site-mode";
 
 export const Route = createFileRoute("/testing_/guide")({
+  beforeLoad: () => {
+    if (isLiveMode()) throw redirect({ to: "/" });
+  },
   head: () => {
     const head = buildPageHead({
       title: "Beta Tester Guide - Erth",

@@ -16,6 +16,7 @@ export interface FeedbackConfigData {
 }
 
 export interface SiteConfigData {
+  siteMode: "beta" | "live";
   productionUrl: string;
   oneLiner: string;
   visionStatement: string;
