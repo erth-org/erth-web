@@ -2,6 +2,7 @@ import {
   addGuideIssue,
   removeGuideIssue,
   resetTesterGuide,
+  setAllGuideTasks,
   setMissionRating,
   setMissionStatus,
   toggleGuideTask,
@@ -50,6 +51,28 @@ describe("testerGuideReducer", () => {
     expect(withTask.missions.orientation).not.toBe(previousMission);
     expect(withTask.missions.orientation.tasks).not.toBe(previousTasks);
     expect(withTask.missions.moment).toBe(initial.missions.moment);
+  });
+
+  it("selects and clears every task in one mission without changing other missions", () => {
+    const initial = createInitialTesterGuideState();
+    const selected = testerGuideReducer(initial, setAllGuideTasks("orientation", true));
+    const cleared = testerGuideReducer(selected, setAllGuideTasks("orientation", false));
+
+    expect(Object.values(selected.missions.orientation.tasks)).toEqual(
+      expect.arrayContaining([true]),
+    );
+    expect(Object.values(selected.missions.orientation.tasks).every(Boolean)).toBe(true);
+    expect(Object.values(cleared.missions.orientation.tasks).every((checked) => !checked)).toBe(
+      true,
+    );
+    expect(initial.missions.orientation.tasks).toEqual(
+      expect.objectContaining(
+        Object.fromEntries(
+          Object.keys(initial.missions.orientation.tasks).map((id) => [id, false]),
+        ),
+      ),
+    );
+    expect(selected.missions.moment).toBe(initial.missions.moment);
   });
 
   it("adds, edits, and removes reports immutably", () => {

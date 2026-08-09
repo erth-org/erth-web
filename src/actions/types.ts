@@ -2,6 +2,7 @@ export const SET_GUIDE_STAGE = "SET_GUIDE_STAGE" as const;
 export const UPDATE_TESTER_DETAILS = "UPDATE_TESTER_DETAILS" as const;
 export const SET_SHARING_ACKNOWLEDGEMENT = "SET_SHARING_ACKNOWLEDGEMENT" as const;
 export const TOGGLE_GUIDE_TASK = "TOGGLE_GUIDE_TASK" as const;
+export const SET_ALL_GUIDE_TASKS = "SET_ALL_GUIDE_TASKS" as const;
 export const SET_MISSION_STATUS = "SET_MISSION_STATUS" as const;
 export const SET_MISSION_RATING = "SET_MISSION_RATING" as const;
 export const SET_MISSION_NOTES = "SET_MISSION_NOTES" as const;

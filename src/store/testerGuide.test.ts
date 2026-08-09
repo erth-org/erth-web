@@ -47,6 +47,15 @@ describe("tester guide persistence migrations", () => {
     });
   });
 
+  it("migrates subjective travel frequency answers to numeric ranges", () => {
+    expect(migrateTesterDetails({ travelFrequency: "A few times a year" }).travelFrequency).toBe(
+      "3–5 trips per year",
+    );
+    expect(migrateTesterDetails({ travelFrequency: "Every few years" }).travelFrequency).toBe(
+      "Less than 1 trip per year",
+    );
+  });
+
   it("recovers safely from malformed tester data", () => {
     expect(migrateTesterDetails("corrupt").device).toMatchObject({
       platform: "other",

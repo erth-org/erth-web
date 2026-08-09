@@ -8,6 +8,7 @@ import {
   MISSION_QUESTIONNAIRE,
   REFLECTION_RATING_QUESTIONS,
   REFLECTION_TEXT_QUESTIONS,
+  TRAVEL_FREQUENCY_OPTIONS,
   WELCOME_QUESTIONNAIRE,
 } from "@/content/tester-guide-questionnaire";
 
@@ -36,6 +37,14 @@ describe("tester guide questionnaire", () => {
     expect(MISSION_QUESTIONNAIRE.outcomeOptions).toHaveLength(4);
     expect(ISSUE_QUESTIONNAIRE.severityOptions).toHaveLength(5);
     expect(new Set(reflectionKeys).size).toBe(8);
+    expect(TRAVEL_FREQUENCY_OPTIONS).toEqual([
+      "12+ trips per year",
+      "6–11 trips per year",
+      "3–5 trips per year",
+      "1–2 trips per year",
+      "Less than 1 trip per year",
+      "I don’t travel",
+    ]);
     expect(WELCOME_QUESTIONNAIRE.groups.personal.fields.email.label).toBe("Contact email");
     expect(WELCOME_QUESTIONNAIRE.acknowledgement.label).toMatch(/nothing reaches Erth/i);
   });

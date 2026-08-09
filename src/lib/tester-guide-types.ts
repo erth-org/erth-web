@@ -18,7 +18,7 @@ export type MissionStatus =
 
 export type IssueSeverity = "p0" | "p1" | "p2" | "p3" | "positive";
 
-export type HandoffAction = "copy" | "download" | "email" | "print";
+export type HandoffAction = "copy" | "email" | "pdf";
 
 export type DevicePlatform = "ios" | "android" | "other";
 

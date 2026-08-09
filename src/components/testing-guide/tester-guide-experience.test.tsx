@@ -80,7 +80,14 @@ describe("TesterGuideExperience", () => {
     expect(within(personal).getByLabelText(/contact email/i)).toBeInTheDocument();
     expect(within(device).getByLabelText(/device family/i)).toBeInTheDocument();
     expect(within(device).getByLabelText(/os version/i)).toBeInTheDocument();
-    expect(within(habits).getByLabelText(/how often do you travel/i)).toBeInTheDocument();
+    const travelFrequency = within(habits).getByLabelText(/how many trips do you take per year/i);
+    expect(travelFrequency).toBeInTheDocument();
+    expect(
+      within(travelFrequency).getByRole("option", { name: /12\+ trips per year/i }),
+    ).toBeInTheDocument();
+    expect(
+      within(travelFrequency).getByRole("option", { name: /1–2 trips per year/i }),
+    ).toBeInTheDocument();
     expect(within(habits).getByLabelText(/where do your trip memories live/i)).toBeInTheDocument();
   });
 
@@ -137,6 +144,41 @@ describe("TesterGuideExperience", () => {
     expect(rating).toHaveAttribute("aria-pressed", "true");
     await user.click(rating);
     expect(rating).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("selects, clears, and reflects partial mission checklist progress", async () => {
+    const user = userEvent.setup();
+    renderGuide();
+
+    await user.click(
+      screen.getByLabelText(/i understand this guide saves answers in this browser/i),
+    );
+    await user.click(screen.getByRole("button", { name: /begin testing/i }));
+
+    const checklist = screen.getByRole("group", { name: /mission checklist/i });
+    const selectAll = within(checklist).getByRole("checkbox", {
+      name: /select all mission tasks/i,
+    });
+    const taskCheckboxes = within(checklist).getAllByRole("checkbox").slice(1);
+    const taskCount = taskCheckboxes.length;
+
+    await user.click(selectAll);
+    expect(within(checklist).getByText(`${taskCount}/${taskCount} complete`)).toBeInTheDocument();
+    within(checklist)
+      .getAllByRole("checkbox")
+      .forEach((checkbox) => expect(checkbox).toBeChecked());
+
+    await user.click(taskCheckboxes[0]);
+    expect(selectAll).toHaveAttribute("data-state", "indeterminate");
+    expect(
+      within(checklist).getByText(`${taskCount - 1}/${taskCount} complete`),
+    ).toBeInTheDocument();
+
+    await user.click(selectAll);
+    expect(within(checklist).getByText(`${taskCount}/${taskCount} complete`)).toBeInTheDocument();
+    await user.click(selectAll);
+    expect(within(checklist).getByText(`0/${taskCount} complete`)).toBeInTheDocument();
+    taskCheckboxes.forEach((checkbox) => expect(checkbox).not.toBeChecked());
   });
 
   it("keeps the feedback log outside the numbered journey and returns to the active stage", async () => {

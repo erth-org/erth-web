@@ -69,96 +69,189 @@ export function buildGuideExportPayload(
   };
 }
 
-function valueOrDash(value: string | number): string {
-  return value === "" || value === 0 ? "—" : String(value);
+function hasText(value: string): boolean {
+  return value.trim().length > 0;
+}
+
+function formatGeneratedAt(value: string): string {
+  const generatedAt = new Date(value);
+  if (Number.isNaN(generatedAt.getTime())) return value;
+
+  return `${new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  }).format(generatedAt)} UTC`;
+}
+
+function addSection(lines: string[], title: string): void {
+  if (lines.length) lines.push("");
+  lines.push(title, "-".repeat(title.length));
+}
+
+function addOptionalLine(lines: string[], label: string, value: string): void {
+  const normalized = value.trim();
+  if (normalized) lines.push(`- ${label}: ${normalized}`);
+}
+
+function addIndentedDetail(lines: string[], label: string, value: string): void {
+  const normalized = value.trim();
+  if (!normalized) return;
+
+  const valueLines = normalized.split(/\r?\n/).map((line) => line.trim());
+  if (valueLines.length === 1) {
+    lines.push(`   ${label}: ${valueLines[0]}`);
+    return;
+  }
+
+  lines.push(`   ${label}:`);
+  valueLines.forEach((line) => lines.push(`      ${line}`));
+}
+
+function missionHasFeedback(mission: TesterGuideExportPayload["missions"][number]): boolean {
+  return (
+    mission.status !== "not_started" ||
+    mission.rating > 0 ||
+    hasText(mission.notes) ||
+    mission.completedTasks.length > 0
+  );
+}
+
+function missionOutcome(mission: TesterGuideExportPayload["missions"][number]): string {
+  return mission.status === "not_started" && mission.completedTasks.length
+    ? "In progress"
+    : STATUS_LABELS[mission.status];
 }
 
 export function generateReadableGuideSummary(payload: TesterGuideExportPayload): string {
   const device = payload.tester.device.exactModel
     ? `${payload.tester.device.deviceFamily} — ${payload.tester.device.exactModel}`
     : payload.tester.device.deviceFamily;
+  const identity = payload.tester.erthUsername || payload.tester.name || "Beta tester";
   const lines = [
-    "ERTH GUIDED BETA FEEDBACK",
-    `Generated: ${payload.generatedAt}`,
-    "",
-    "TESTER CONTEXT",
-    `Name: ${valueOrDash(payload.tester.name)}`,
-    `Email: ${valueOrDash(payload.tester.email)}`,
-    `Erth username: ${valueOrDash(payload.tester.erthUsername)}`,
-    `Device: ${valueOrDash(device)}`,
-    `OS version: ${valueOrDash(payload.tester.device.osVersion)}`,
-    `TestFlight build: ${valueOrDash(payload.tester.testFlightBuild)}`,
-    `Travel frequency: ${valueOrDash(payload.tester.travelFrequency)}`,
-    `Current memory system: ${valueOrDash(payload.tester.currentMemorySystem)}`,
-    "",
-    `PROGRESS: ${payload.progress.completedTasks}/${payload.progress.totalTasks} tasks across ${payload.progress.completedMissions}/${payload.progress.totalMissions} missions`,
-    "",
-    "MISSIONS",
+    "ERTH BETA TEST REPORT",
+    "=====================",
+    `Generated: ${formatGeneratedAt(payload.generatedAt)}`,
   ];
 
-  payload.missions.forEach((mission) => {
-    lines.push(mission.title);
-    lines.push(`Outcome: ${STATUS_LABELS[mission.status]}`);
-    lines.push(`Rating: ${valueOrDash(mission.rating)}/5`);
-    lines.push(
-      `Tasks: ${mission.completedTasks.length}/${mission.completedTasks.length + mission.incompleteTasks.length}`,
-    );
-    lines.push(`Notes: ${valueOrDash(mission.notes)}`);
-    if (mission.incompleteTasks.length) {
-      lines.push(`Not completed: ${mission.incompleteTasks.join(" | ")}`);
-    }
-    lines.push("");
-  });
+  addSection(lines, "AT A GLANCE");
+  lines.push(`- Tester: ${identity}`);
+  lines.push(
+    `- Progress: ${payload.progress.completedMissions} of ${payload.progress.totalMissions} missions; ${payload.progress.completedTasks} of ${payload.progress.totalTasks} tasks`,
+  );
+  const issueCount = payload.issueReports.filter((report) => report.severity !== "positive").length;
+  lines.push(`- Issues: ${issueCount}`);
+  lines.push(`- Positive signals: ${payload.issueReports.length - issueCount}`);
 
-  lines.push("OVERALL EXPERIENCE");
-  lines.push(`Clarity: ${valueOrDash(payload.experience.clarity)}/5`);
-  lines.push(`Reliability: ${valueOrDash(payload.experience.reliability)}/5`);
-  lines.push(`Product value: ${valueOrDash(payload.experience.productValue)}/5`);
-  lines.push(`Likelihood to return: ${valueOrDash(payload.experience.likelihoodToReturn)}/5`);
-  lines.push(`Strongest moment: ${valueOrDash(payload.experience.strongestMoment)}`);
-  lines.push(`Biggest confusion: ${valueOrDash(payload.experience.biggestConfusion)}`);
-  lines.push(`Priority improvement: ${valueOrDash(payload.experience.priorityImprovement)}`);
-  lines.push(`Final thoughts: ${valueOrDash(payload.experience.finalThoughts)}`);
-  lines.push("", "ISSUES AND POSITIVE SIGNALS");
+  const contextLines: string[] = [];
+  if (payload.tester.name.trim() !== identity) {
+    addOptionalLine(contextLines, "Name", payload.tester.name);
+  }
+  addOptionalLine(contextLines, "Email", payload.tester.email);
+  if (payload.tester.erthUsername.trim() !== identity) {
+    addOptionalLine(contextLines, "Erth username", payload.tester.erthUsername);
+  }
+  addOptionalLine(contextLines, "Device", device);
+  addOptionalLine(contextLines, "OS version", payload.tester.device.osVersion);
+  addOptionalLine(contextLines, "TestFlight build", payload.tester.testFlightBuild);
+  addOptionalLine(contextLines, "Travel frequency", payload.tester.travelFrequency);
+  addOptionalLine(contextLines, "Current memory system", payload.tester.currentMemorySystem);
+  if (contextLines.length) {
+    addSection(lines, "TESTER CONTEXT");
+    lines.push(...contextLines);
+  }
 
-  if (!payload.issueReports.length) {
-    lines.push("No issue reports added.");
-  } else {
+  if (payload.issueReports.length) {
+    addSection(lines, "ISSUES AND POSITIVE SIGNALS");
     payload.issueReports.forEach((issue, index) => {
-      lines.push(`${index + 1}. ${issue.screen} — ${issue.severity.toUpperCase()}`);
-      lines.push(`Trying: ${valueOrDash(issue.trying)}`);
-      lines.push(`Happened: ${valueOrDash(issue.happened)}`);
-      lines.push(`Expected: ${valueOrDash(issue.expected)}`);
-      lines.push(`Steps: ${valueOrDash(issue.steps)}`);
-      lines.push(`Media note: ${valueOrDash(issue.mediaNote)}`, "");
+      if (index) lines.push("");
+      lines.push(
+        `${index + 1}. ${issue.screen.trim() || "Unspecified screen"} [${issue.severity.toUpperCase()}]`,
+      );
+      addIndentedDetail(lines, "Trying to", issue.trying);
+      addIndentedDetail(lines, "What happened", issue.happened);
+      addIndentedDetail(lines, "Expected", issue.expected);
+      addIndentedDetail(lines, "Steps to reproduce", issue.steps);
+      addIndentedDetail(lines, "Screenshot or video", issue.mediaNote);
     });
   }
+
+  const attemptedMissions = payload.missions.filter(missionHasFeedback);
+  if (attemptedMissions.length) {
+    addSection(lines, "MISSION RESULTS");
+    attemptedMissions.forEach((mission, index) => {
+      if (index) lines.push("");
+      const taskTotal = mission.completedTasks.length + mission.incompleteTasks.length;
+      lines.push(`${index + 1}. ${mission.title}`);
+      lines.push(`   Outcome: ${missionOutcome(mission)}`);
+      lines.push(`   Tasks: ${mission.completedTasks.length} of ${taskTotal}`);
+      if (mission.rating > 0) lines.push(`   Rating: ${mission.rating}/5`);
+      addIndentedDetail(lines, "Notes", mission.notes);
+      if (mission.completedTasks.length) {
+        lines.push("   Completed tasks:");
+        mission.completedTasks.forEach((task) => lines.push(`   - [x] ${task}`));
+      }
+      if (mission.status !== "skipped" && mission.incompleteTasks.length) {
+        lines.push("   Remaining tasks:");
+        mission.incompleteTasks.forEach((task) => lines.push(`   - [ ] ${task}`));
+      }
+    });
+  }
+
+  const reflectionRatings = [
+    ["Clarity", payload.experience.clarity],
+    ["Reliability", payload.experience.reliability],
+    ["Product value", payload.experience.productValue],
+    ["Likelihood to return", payload.experience.likelihoodToReturn],
+  ] as const;
+  const reflectionHasFeedback =
+    reflectionRatings.some(([, rating]) => rating > 0) ||
+    [
+      payload.experience.strongestMoment,
+      payload.experience.biggestConfusion,
+      payload.experience.priorityImprovement,
+      payload.experience.finalThoughts,
+    ].some(hasText);
+
+  if (reflectionHasFeedback) {
+    addSection(lines, "OVERALL EXPERIENCE");
+    reflectionRatings.forEach(([label, rating]) => {
+      if (rating > 0) lines.push(`- ${label}: ${rating}/5`);
+    });
+    addOptionalLine(lines, "Strongest moment", payload.experience.strongestMoment);
+    addOptionalLine(lines, "Biggest confusion", payload.experience.biggestConfusion);
+    addOptionalLine(lines, "Priority improvement", payload.experience.priorityImprovement);
+    addOptionalLine(lines, "Final thoughts", payload.experience.finalThoughts);
+  }
+
+  lines.push("", "--", "Sent from the Erth closed beta tester guide.");
 
   return lines.join("\n");
 }
 
-export function buildGuideEmailHref(
-  payload: TesterGuideExportPayload,
-  teamEmail: string,
-  maxBodyLength = 6000,
-): string {
-  const identity = payload.tester.erthUsername || payload.tester.name || "Beta tester";
-  const fullSummary = generateReadableGuideSummary(payload);
-  const overflowNote =
-    "\n\n— This email was shortened for compatibility. Please attach the exported JSON for the complete response. —";
-  const body =
-    fullSummary.length > maxBodyLength
-      ? `${fullSummary.slice(0, Math.max(0, maxBodyLength - overflowNote.length))}${overflowNote}`
-      : fullSummary;
-
-  return `mailto:${teamEmail}?subject=${encodeURIComponent(`Erth beta feedback — ${identity}`)}&body=${encodeURIComponent(body)}`;
+export function generateCompleteGuideEmailBody(payload: TesterGuideExportPayload): string {
+  return [
+    "Hello Erth team,",
+    "",
+    "Here is my closed beta tester report.",
+    "",
+    generateReadableGuideSummary(payload),
+  ]
+    .join("\n")
+    .replace(/\n/g, "\r\n");
 }
 
-export function getGuideExportFilename(payload: TesterGuideExportPayload): string {
-  const identity = payload.tester.erthUsername || payload.tester.name || "tester";
-  const slug = identity
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-  return `erth-beta-feedback-${slug || "tester"}.json`;
+export function buildGuideCompleteEmailHref(
+  payload: TesterGuideExportPayload,
+  teamEmail: string,
+): string {
+  const identity = payload.tester.erthUsername || payload.tester.name || "Beta tester";
+  const subject = `Erth beta report - ${payload.progress.completedMissions}/${payload.progress.totalMissions} missions - ${identity}`;
+  const body = generateCompleteGuideEmailBody(payload);
+
+  return `mailto:${teamEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }

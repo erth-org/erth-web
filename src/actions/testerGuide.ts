@@ -7,6 +7,7 @@ import {
   GUIDE_HANDOFF_SUCCESS,
   REMOVE_GUIDE_ISSUE,
   RESET_TESTER_GUIDE,
+  SET_ALL_GUIDE_TASKS,
   SET_GUIDE_STAGE,
   SET_MISSION_NOTES,
   SET_MISSION_RATING,
@@ -18,11 +19,11 @@ import {
   UPDATE_TESTER_DETAILS,
 } from "@/actions/types";
 import {
-  buildGuideEmailHref,
+  buildGuideCompleteEmailHref,
   buildGuideExportPayload,
   generateReadableGuideSummary,
-  getGuideExportFilename,
 } from "@/lib/tester-guide-export";
+import { generateGuidePdf, getGuidePdfFileName } from "@/lib/tester-guide-pdf";
 import type {
   ExperienceReflection,
   FeedbackIssue,
@@ -43,6 +44,10 @@ export type TesterGuideAction =
   | UpdatedAction<{
       type: typeof TOGGLE_GUIDE_TASK;
       payload: { missionId: MissionId; taskId: string; checked: boolean };
+    }>
+  | UpdatedAction<{
+      type: typeof SET_ALL_GUIDE_TASKS;
+      payload: { missionId: MissionId; checked: boolean };
     }>
   | UpdatedAction<{
       type: typeof SET_MISSION_STATUS;
@@ -117,6 +122,12 @@ export const toggleGuideTask = (
   updatedAt: updatedAt(),
 });
 
+export const setAllGuideTasks = (missionId: MissionId, checked: boolean): TesterGuideAction => ({
+  type: SET_ALL_GUIDE_TASKS,
+  payload: { missionId, checked },
+  updatedAt: updatedAt(),
+});
+
 export const setMissionStatus = (
   missionId: MissionId,
   status: MissionStatus,
@@ -173,9 +184,10 @@ export const clearGuideHandoff = (): TesterGuideAction => ({ type: CLEAR_GUIDE_H
 
 export interface GuideHandoffDependencies {
   copyText: (text: string) => Promise<void>;
-  downloadJson: (json: string, filename: string) => void;
+  createPdf: typeof generateGuidePdf;
+  downloadPdf: (blob: Blob, fileName: string) => void;
+  sharePdf: (blob: Blob, fileName: string, title: string, text: string) => Promise<boolean>;
   openEmail: (href: string) => void;
-  printPage: () => void;
 }
 
 async function defaultCopyText(text: string): Promise<void> {
@@ -198,45 +210,63 @@ async function defaultCopyText(text: string): Promise<void> {
 
 export const browserGuideHandoffDependencies: GuideHandoffDependencies = {
   copyText: defaultCopyText,
-  downloadJson: (json, filename) => {
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+  createPdf: generateGuidePdf,
+  downloadPdf: (blob, fileName) => {
+    const objectUrl = URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = objectUrl;
+    downloadLink.download = fileName;
+    downloadLink.hidden = true;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+  },
+  sharePdf: async (blob, fileName, title, text) => {
+    if (typeof File === "undefined" || !navigator.share || !navigator.canShare) return false;
+
+    const file = new File([blob], fileName, {
+      type: "application/pdf",
+      lastModified: Date.now(),
+    });
+    if (!navigator.canShare({ files: [file] })) return false;
+
+    await navigator.share({ files: [file], title, text });
+    return true;
   },
   openEmail: (href) => {
-    window.location.href = href;
+    const emailLink = document.createElement("a");
+    emailLink.href = href;
+    emailLink.target = "_self";
+    emailLink.rel = "noopener";
+    emailLink.hidden = true;
+    document.body.appendChild(emailLink);
+    emailLink.click();
+    emailLink.remove();
   },
-  printPage: () => window.print(),
 };
 
 function handoffFailureMessage(action: HandoffAction, error: unknown): string {
-  const fallback =
-    action === "copy"
-      ? "Could not copy the summary. Download the JSON instead."
-      : action === "download"
-        ? "Could not create the download. Try copying the summary."
-        : action === "email"
-          ? "Could not open your email app. Copy the summary instead."
-          : "Could not open the print dialog.";
+  const fallback = {
+    copy: "Could not copy the text backup. Try downloading the PDF instead.",
+    email: "Could not open your email app. Download the PDF and attach it in webmail instead.",
+    pdf: "Could not prepare the PDF. Try the text backup instead.",
+  }[action];
   return error instanceof Error && error.message ? `${fallback} ${error.message}` : fallback;
 }
 
-function runHandoff(
+function runHandoff<Result>(
   action: HandoffAction,
-  successMessage: string,
-  operation: (state: TesterGuideRootState) => Promise<void> | void,
+  successMessage: string | ((result: Result) => string),
+  operation: (state: TesterGuideRootState) => Promise<Result> | Result,
 ): TesterGuideThunk<Promise<boolean>> {
   return async (dispatch, getState) => {
     dispatch({ type: GUIDE_HANDOFF_REQUEST, payload: action });
     try {
-      await operation(getState());
-      dispatch({ type: GUIDE_HANDOFF_SUCCESS, payload: { action, message: successMessage } });
+      const result = await operation(getState());
+      const message =
+        typeof successMessage === "function" ? successMessage(result) : successMessage;
+      dispatch({ type: GUIDE_HANDOFF_SUCCESS, payload: { action, message } });
       return true;
     } catch (error) {
       dispatch({
@@ -257,31 +287,48 @@ export function copyGuideSummary(
   });
 }
 
-export function downloadGuideJson(
-  dependencies = browserGuideHandoffDependencies,
-): TesterGuideThunk<Promise<boolean>> {
-  return runHandoff("download", "Complete feedback JSON downloaded.", (state) => {
-    const payload = buildGuideExportPayload(state.testerGuide);
-    dependencies.downloadJson(JSON.stringify(payload, null, 2), getGuideExportFilename(payload));
-  });
-}
-
-export function openGuideEmail(
+export function shareGuidePdf(
   teamEmail: string,
   dependencies = browserGuideHandoffDependencies,
 ): TesterGuideThunk<Promise<boolean>> {
   return runHandoff(
-    "email",
-    "Email draft opened. Attach the JSON for the complete response.",
-    (state) => {
+    "pdf",
+    (sharedNatively) =>
+      sharedNatively
+        ? `PDF share sheet opened. The recipient address (${teamEmail}) was copied when clipboard access was available.`
+        : "An organized email report opened. Nothing was downloaded to this device.",
+    async (state) => {
       const payload = buildGuideExportPayload(state.testerGuide);
-      dependencies.openEmail(buildGuideEmailHref(payload, teamEmail));
+      const fileName = getGuidePdfFileName(payload);
+      const pdf = await dependencies.createPdf(payload);
+      const identity = payload.tester.erthUsername || payload.tester.name || "Beta tester";
+
+      try {
+        await dependencies.copyText(teamEmail);
+      } catch {
+        // The native share sheet still works when clipboard permission is unavailable.
+      }
+
+      const sharedNatively = await dependencies.sharePdf(
+        pdf,
+        fileName,
+        `Erth beta tester report - ${identity}`,
+        `Send this completed report to ${teamEmail}.`,
+      );
+      if (sharedNatively) return true;
+
+      dependencies.openEmail(buildGuideCompleteEmailHref(payload, teamEmail));
+      return false;
     },
   );
 }
 
-export function printGuide(
+export function downloadGuidePdf(
   dependencies = browserGuideHandoffDependencies,
 ): TesterGuideThunk<Promise<boolean>> {
-  return runHandoff("print", "Print dialog opened.", () => dependencies.printPage());
+  return runHandoff("pdf", "PDF report downloaded.", async (state) => {
+    const payload = buildGuideExportPayload(state.testerGuide);
+    const pdf = await dependencies.createPdf(payload);
+    dependencies.downloadPdf(pdf, getGuidePdfFileName(payload));
+  });
 }

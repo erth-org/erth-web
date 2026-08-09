@@ -1,9 +1,8 @@
 import {
   browserGuideHandoffDependencies,
   copyGuideSummary,
-  downloadGuideJson,
-  openGuideEmail,
-  printGuide,
+  downloadGuidePdf,
+  shareGuidePdf,
   type GuideHandoffDependencies,
   type TesterGuideAction,
 } from "@/actions/testerGuide";
@@ -23,9 +22,10 @@ function createHarness() {
 function dependencies(overrides: Partial<GuideHandoffDependencies> = {}): GuideHandoffDependencies {
   return {
     copyText: jest.fn().mockResolvedValue(undefined),
-    downloadJson: jest.fn(),
+    createPdf: jest.fn().mockResolvedValue(new Blob(["pdf"], { type: "application/pdf" })),
+    downloadPdf: jest.fn(),
+    sharePdf: jest.fn().mockResolvedValue(false),
     openEmail: jest.fn(),
-    printPage: jest.fn(),
     ...overrides,
   };
 }
@@ -42,9 +42,7 @@ describe("tester guide handoff thunks", () => {
     );
 
     expect(result).toBe(true);
-    expect(deps.copyText).toHaveBeenCalledWith(
-      expect.stringContaining("ERTH GUIDED BETA FEEDBACK"),
-    );
+    expect(deps.copyText).toHaveBeenCalledWith(expect.stringContaining("ERTH BETA TEST REPORT"));
     expect(harness.dispatched.map((action) => action.type)).toEqual([
       "GUIDE_HANDOFF_REQUEST",
       "GUIDE_HANDOFF_SUCCESS",
@@ -68,41 +66,74 @@ describe("tester guide handoff thunks", () => {
     });
   });
 
-  it("downloads full JSON and opens a bounded email draft", async () => {
+  it("uses native file sharing without downloading a duplicate", async () => {
     const harness = createHarness();
     harness.state.testerGuide.tester.name = "Taylor";
-    const deps = dependencies();
+    const deps = dependencies({ sharePdf: jest.fn().mockResolvedValue(true) });
 
-    await downloadGuideJson(deps)(harness.dispatch as never, () => harness.state, undefined);
-    await openGuideEmail("team@example.com", deps)(
+    await shareGuidePdf("team@example.com", deps)(
       harness.dispatch as never,
       () => harness.state,
       undefined,
     );
 
-    expect(deps.downloadJson).toHaveBeenCalledWith(
-      expect.stringContaining('"schemaVersion": 4'),
-      "erth-beta-feedback-taylor.json",
+    expect(deps.createPdf).toHaveBeenCalledTimes(1);
+    expect(deps.copyText).toHaveBeenCalledWith("team@example.com");
+    expect(deps.sharePdf).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringMatching(/^erth-beta-report-taylor-\d{4}-\d{2}-\d{2}\.pdf$/),
+      expect.stringContaining("Taylor"),
+      expect.stringContaining("team@example.com"),
     );
-    expect(deps.openEmail).toHaveBeenCalledWith(expect.stringContaining("mailto:team@example.com"));
+    expect(deps.downloadPdf).not.toHaveBeenCalled();
+    expect(deps.openEmail).not.toHaveBeenCalled();
+    expect(harness.dispatched.at(-1)).toMatchObject({
+      type: "GUIDE_HANDOFF_SUCCESS",
+      payload: { message: expect.stringContaining("share sheet opened") },
+    });
   });
 
-  it("opens the print dialog through the same explicit handoff flow", async () => {
+  it("opens an organized email without saving a file when native sharing is unavailable", async () => {
     const harness = createHarness();
+    harness.state.testerGuide.tester.name = "Taylor";
+    harness.state.testerGuide.missions.orientation.status = "completed_without_help";
+    harness.state.testerGuide.reflection.finalThoughts = "Keep this complete.";
     const deps = dependencies();
 
-    const result = await printGuide(deps)(
+    const result = await shareGuidePdf("team@example.com", deps)(
       harness.dispatch as never,
       () => harness.state,
       undefined,
     );
 
     expect(result).toBe(true);
-    expect(deps.printPage).toHaveBeenCalledTimes(1);
-    expect(harness.dispatched.map((action) => action.type)).toEqual([
-      "GUIDE_HANDOFF_REQUEST",
-      "GUIDE_HANDOFF_SUCCESS",
-    ]);
+    expect(deps.downloadPdf).not.toHaveBeenCalled();
+    expect(deps.openEmail).toHaveBeenCalledTimes(1);
+    const email = decodeURIComponent((deps.openEmail as jest.Mock).mock.calls[0][0]);
+    expect(email).toContain("Here is my closed beta tester report.");
+    expect(email).toContain("MISSION RESULTS");
+    expect(email).toContain("Find your way in");
+    expect(email).not.toContain("Test the safety net");
+    expect(email).toContain("Keep this complete.");
+    expect(harness.dispatched.at(-1)).toMatchObject({
+      type: "GUIDE_HANDOFF_SUCCESS",
+      payload: { message: expect.stringContaining("organized email report") },
+    });
+  });
+
+  it("downloads a standalone PDF for browser-based webmail", async () => {
+    const harness = createHarness();
+    const deps = dependencies();
+
+    const result = await downloadGuidePdf(deps)(
+      harness.dispatch as never,
+      () => harness.state,
+      undefined,
+    );
+
+    expect(result).toBe(true);
+    expect(deps.downloadPdf).toHaveBeenCalledTimes(1);
+    expect(deps.openEmail).not.toHaveBeenCalled();
   });
 });
 
@@ -132,19 +163,40 @@ describe("browser guide handoff adapter", () => {
     expect(document.querySelector("textarea[readonly]")).not.toBeInTheDocument();
   });
 
-  it("creates and revokes a JSON download URL and delegates printing", () => {
-    const createObjectURL = jest.fn().mockReturnValue("blob:feedback");
-    const revokeObjectURL = jest.fn();
-    Object.defineProperty(URL, "createObjectURL", { value: createObjectURL, configurable: true });
-    Object.defineProperty(URL, "revokeObjectURL", { value: revokeObjectURL, configurable: true });
-    const click = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+  it("opens mailto links through a temporary anchor for browser and OS handlers", () => {
+    let clickedHref = "";
+    const click = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      clickedHref = this.href;
+    });
 
-    browserGuideHandoffDependencies.downloadJson('{"schemaVersion":2}', "feedback.json");
-    browserGuideHandoffDependencies.printPage();
+    browserGuideHandoffDependencies.openEmail(
+      "mailto:team@example.com?subject=Erth%20report&body=Formatted%20feedback",
+    );
 
-    expect(createObjectURL).toHaveBeenCalled();
     expect(click).toHaveBeenCalledTimes(1);
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:feedback");
-    expect(window.print).toHaveBeenCalled();
+    expect(clickedHref).toContain("mailto:team@example.com");
+    expect(document.querySelector('a[href^="mailto:"]')).not.toBeInTheDocument();
+  });
+
+  it("uses the Web Share API only when PDF file sharing is supported", async () => {
+    const share = jest.fn().mockResolvedValue(undefined);
+    const canShare = jest.fn().mockReturnValue(true);
+    Object.defineProperty(navigator, "share", { value: share, configurable: true });
+    Object.defineProperty(navigator, "canShare", { value: canShare, configurable: true });
+
+    const shared = await browserGuideHandoffDependencies.sharePdf(
+      new Blob(["pdf"], { type: "application/pdf" }),
+      "report.pdf",
+      "Erth report",
+      "Send to the Erth team",
+    );
+
+    expect(shared).toBe(true);
+    expect(canShare).toHaveBeenCalledWith({ files: [expect.any(File)] });
+    expect(share).toHaveBeenCalledWith(
+      expect.objectContaining({ files: [expect.any(File)], title: "Erth report" }),
+    );
   });
 });

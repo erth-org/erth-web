@@ -6,15 +6,14 @@ import {
   Check,
   CheckCircle2,
   ClipboardCopy,
-  FileJson,
+  Download,
   Flag,
-  Mail,
   Pencil,
   Plus,
-  Printer,
   RotateCcw,
   Save,
   ShieldCheck,
+  Share2,
   Sparkles,
   Trash2,
 } from "lucide-react";
@@ -22,16 +21,16 @@ import {
   addGuideIssue,
   clearGuideHandoff,
   copyGuideSummary,
-  downloadGuideJson,
-  openGuideEmail,
-  printGuide,
+  downloadGuidePdf,
   removeGuideIssue,
   resetTesterGuide,
+  setAllGuideTasks,
   setGuideStage,
   setMissionNotes,
   setMissionRating,
   setMissionStatus,
   setSharingAcknowledgement,
+  shareGuidePdf,
   toggleGuideTask,
   updateGuideIssue,
   updateGuideReflection,
@@ -567,20 +566,53 @@ function MissionStep({ missionId, error }: { missionId: MissionId; error: string
   const mission = MISSION_BY_ID[missionId];
   const response = useTesterGuideSelector((state) => state.testerGuide.missions[missionId]);
   const completeCount = Object.values(response.tasks).filter(Boolean).length;
+  const allTasksComplete = completeCount === mission.tasks.length;
+  const someTasksComplete = completeCount > 0 && !allTasksComplete;
+  const selectAllState = allTasksComplete ? true : someTasksComplete ? "indeterminate" : false;
   const selectedOutcome = MISSION_QUESTIONNAIRE.outcomeOptions.find(
     (option) => option.value === response.status,
   );
 
   return (
     <div className="space-y-8">
-      <div className="rounded-2xl border border-border bg-background/45 p-4 sm:p-6">
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+      <div
+        className="rounded-2xl border border-border bg-background/45 p-4 sm:p-6"
+        role="group"
+        aria-labelledby={`${mission.id}-checklist-label`}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p
+            id={`${mission.id}-checklist-label`}
+            className="text-xs font-semibold uppercase tracking-[0.18em] text-primary"
+          >
             {MISSION_QUESTIONNAIRE.checklistLabel}
           </p>
-          <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
-            {completeCount}/{mission.tasks.length} complete
-          </span>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+              {completeCount}/{mission.tasks.length} complete
+            </span>
+            <label
+              htmlFor={`${mission.id}-select-all`}
+              className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-2 text-xs font-semibold text-foreground transition-colors hover:bg-primary/[0.07] focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background"
+            >
+              <Checkbox
+                id={`${mission.id}-select-all`}
+                checked={selectAllState}
+                onCheckedChange={() => dispatch(setAllGuideTasks(mission.id, !allTasksComplete))}
+                aria-label={
+                  allTasksComplete
+                    ? MISSION_QUESTIONNAIRE.clearAllAriaLabel
+                    : MISSION_QUESTIONNAIRE.selectAllAriaLabel
+                }
+                className="size-5"
+              />
+              <span>
+                {allTasksComplete
+                  ? MISSION_QUESTIONNAIRE.clearAllLabel
+                  : MISSION_QUESTIONNAIRE.selectAllLabel}
+              </span>
+            </label>
+          </div>
         </div>
         <div className="mt-4 space-y-2">
           {mission.tasks.map((task) => {
@@ -876,7 +908,8 @@ function IssuesStep() {
           <div>
             <h3 className="text-lg font-semibold text-foreground">Saved reports</h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              {issues.length} {issues.length === 1 ? "report" : "reports"} included in your export
+              {issues.length} {issues.length === 1 ? "report" : "reports"} included in your
+              submission
             </p>
           </div>
         </div>
@@ -1019,7 +1052,7 @@ function ReviewStep() {
               ? `${incompleteMissions.length} mission${incompleteMissions.length === 1 ? " has" : "s have"} no outcome selected. `
               : ""}
             {missingReflection ? "Some overall ratings are blank. " : ""}
-            Incomplete or blocked testing is valid evidence, so export is never locked.
+            Incomplete or blocked testing is valid evidence, so submission is never locked.
           </AlertDescription>
         </Alert>
       ) : (
@@ -1027,7 +1060,7 @@ function ReviewStep() {
           <CheckCircle2 className="size-4 text-emerald-400" />
           <AlertTitle>Your guided feedback is ready</AlertTitle>
           <AlertDescription>
-            Choose how you want to hand it to the team. Nothing has been sent automatically.
+            Your answers are ready to turn into a clear, reviewable PDF report.
           </AlertDescription>
         </Alert>
       )}
@@ -1038,44 +1071,47 @@ function ReviewStep() {
           <div>
             <h3 className="text-xl font-semibold text-foreground">You stay in control</h3>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              This page does not submit to a server. Email is the most conversational option; JSON
-              preserves every structured answer and can be attached to that email.
+              This page prepares a clean PDF report. On supported phones, tablets, and computers,
+              the share button opens your device's share sheet so you can choose Mail, Gmail,
+              Outlook, or another installed app. You review everything before pressing Send.
             </p>
           </div>
         </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <Button
             type="button"
-            onClick={() => dispatch(openGuideEmail(siteConfig.contact.email))}
+            disabled={guide.handoff.status === "loading"}
+            onClick={() => dispatch(shareGuidePdf(siteConfig.contact.email))}
             className="min-h-12 rounded-xl border border-primary bg-primary text-primary-foreground shadow-sm transition-[background-color,box-shadow,transform] hover:bg-primary/90 hover:shadow-[0_8px_24px_-12px_oklch(0.72_0.18_45)] active:translate-y-px"
           >
-            <Mail /> Open email draft
+            <Share2 /> Share or email PDF
           </Button>
           <Button
             type="button"
             variant="outline"
-            onClick={() => dispatch(downloadGuideJson())}
-            className="min-h-12 rounded-xl border-primary/45 bg-primary/[0.08] text-foreground transition-[border-color,background-color,transform] hover:border-primary/75 hover:bg-primary/[0.15] hover:text-foreground active:translate-y-px"
-          >
-            <FileJson /> Download complete JSON
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => dispatch(copyGuideSummary())}
+            disabled={guide.handoff.status === "loading"}
+            onClick={() => dispatch(downloadGuidePdf())}
             className="min-h-12 rounded-xl border-border bg-background/75 text-foreground transition-[border-color,background-color,transform] hover:border-primary/55 hover:bg-primary/[0.07] hover:text-foreground active:translate-y-px"
           >
-            <ClipboardCopy /> Copy readable summary
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => dispatch(printGuide())}
-            className="min-h-12 rounded-xl border-border bg-background/75 text-foreground transition-[border-color,background-color,transform] hover:border-primary/55 hover:bg-primary/[0.07] hover:text-foreground active:translate-y-px"
-          >
-            <Printer /> Print or save PDF
+            <Download /> Download PDF
           </Button>
         </div>
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={guide.handoff.status === "loading"}
+          onClick={() => dispatch(copyGuideSummary())}
+          className="mt-3 min-h-11 w-full rounded-xl text-muted-foreground hover:bg-background/75 hover:text-foreground"
+        >
+          <ClipboardCopy /> Copy text backup
+        </Button>
+        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          This email action does not automatically save a file. If your browser supports direct file
+          sharing, the PDF stays in memory and opens in your chosen mail app. Otherwise, the report
+          opens as organized text in your default email app. It includes the feedback you provided
+          without empty or duplicate details. Download PDF remains an optional fallback for
+          browser-based webmail.
+        </p>
       </div>
 
       <div className="flex flex-col gap-4 rounded-2xl border border-destructive/25 bg-destructive/[0.03] p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -1099,7 +1135,7 @@ function ReviewStep() {
             <AlertDialogHeader>
               <AlertDialogTitle>Reset all saved tester feedback?</AlertDialogTitle>
               <AlertDialogDescription>
-                This cannot be undone unless you already exported a copy.
+                This cannot be undone unless you already emailed or copied your feedback.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1271,7 +1307,7 @@ export function TesterGuideExperience() {
         ? "Capture the exact moments that changed your confidence—broken, confusing, slow, or surprisingly good."
         : guide.currentStage === "reflection"
           ? "Zoom out from individual tasks and tell us whether Erth became understandable, reliable, and worth returning to."
-          : "Nothing has been submitted. Review what is saved in this browser and choose how to share it.");
+          : "Nothing has been submitted. Review what is saved in this browser, then choose how to share the report with the team.");
 
   useEffect(() => {
     if (restoredFromStorage) {
@@ -1355,7 +1391,7 @@ export function TesterGuideExperience() {
   return (
     <div className="tester-guide-print relative overflow-x-clip">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-[radial-gradient(circle_at_50%_0%,oklch(0.72_0.18_45_/_0.12),transparent_58%)]" />
-      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:py-12 lg:py-16">
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:py-12 lg:pt-4 lg:pb-16">
         <div className="tester-guide-no-print mb-6 rounded-2xl border border-border bg-card/75 p-4 backdrop-blur lg:hidden">
           <div className="flex items-center justify-between gap-4 text-xs">
             <span className="font-medium text-foreground">
@@ -1444,8 +1480,8 @@ export function TesterGuideExperience() {
                     <AlertCircle className="size-4 text-amber-400" />
                     <AlertTitle>Progress cannot be saved in this browser</AlertTitle>
                     <AlertDescription>
-                      The guide still works, but refreshes will erase answers. Export before
-                      leaving.
+                      The guide still works, but refreshes will erase answers. Email or copy your
+                      feedback before leaving.
                     </AlertDescription>
                   </Alert>
                 ) : null}

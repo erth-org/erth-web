@@ -43,6 +43,14 @@ const ALL_DEVICE_FAMILY_OPTIONS: ReadonlyArray<string> = [
   ...LEGACY_DEVICE_FAMILY_OPTIONS,
 ];
 
+const LEGACY_TRAVEL_FREQUENCY_MAP: Readonly<Record<string, string>> = {
+  "Very often": "12+ trips per year",
+  "A few times a year": "3–5 trips per year",
+  "Once a year": "1–2 trips per year",
+  "Every few years": "Less than 1 trip per year",
+  "I rarely travel": "Less than 1 trip per year",
+};
+
 function sanitizeExactModel(exactModel: string, deviceFamily: string): string {
   return exactModel === deviceFamily || ALL_DEVICE_FAMILY_OPTIONS.includes(exactModel)
     ? ""
@@ -179,6 +187,10 @@ export function migrateTesterDetails(tester: unknown): TesterDetails {
   return {
     ...initial,
     ...testerFields,
+    travelFrequency:
+      LEGACY_TRAVEL_FREQUENCY_MAP[testerFields.travelFrequency || ""] ||
+      testerFields.travelFrequency ||
+      "",
     device: {
       ...migratedDevice,
       osVersion: normalizeOsVersion(

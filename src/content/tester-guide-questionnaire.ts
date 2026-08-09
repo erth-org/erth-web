@@ -73,11 +73,12 @@ export function getDevicePlatform(deviceFamily: string): DevicePlatform {
 }
 
 export const TRAVEL_FREQUENCY_OPTIONS = [
-  "A few times a year",
-  "Once a year",
-  "Every few years",
-  "Very often",
-  "I rarely travel",
+  "12+ trips per year",
+  "6–11 trips per year",
+  "3–5 trips per year",
+  "1–2 trips per year",
+  "Less than 1 trip per year",
+  "I don’t travel",
 ] as const;
 
 export const MEMORY_SYSTEM_OPTIONS = [
@@ -154,7 +155,7 @@ export const WELCOME_QUESTIONNAIRE = {
         "General context about how often you travel and how you currently keep trip memories.",
       fields: {
         travelFrequency: {
-          label: "How often do you travel?",
+          label: "About how many trips do you take per year?",
           placeholder: "No answer selected",
           options: TRAVEL_FREQUENCY_OPTIONS,
         },
@@ -168,13 +169,17 @@ export const WELCOME_QUESTIONNAIRE = {
   },
   acknowledgement: {
     label:
-      "I understand this guide saves answers in this browser, and nothing reaches Erth until I explicitly copy, download, print, or email it.",
+      "I understand this guide saves answers in this browser, and nothing reaches Erth until I explicitly share, email, or upload the generated report.",
     helper: "You can reset the guide and erase its saved progress at any time.",
   },
 } as const;
 
 export const MISSION_QUESTIONNAIRE = {
   checklistLabel: "Mission checklist",
+  selectAllLabel: "Select all",
+  clearAllLabel: "Clear all",
+  selectAllAriaLabel: "Select all mission tasks",
+  clearAllAriaLabel: "Clear all mission tasks",
   outcomePrompt: "How did this mission end?",
   outcomeAriaLabel: "Mission outcome",
   outcomeOptions: [

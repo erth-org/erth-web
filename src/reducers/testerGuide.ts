@@ -7,6 +7,7 @@ import {
   GUIDE_HANDOFF_SUCCESS,
   REMOVE_GUIDE_ISSUE,
   RESET_TESTER_GUIDE,
+  SET_ALL_GUIDE_TASKS,
   SET_GUIDE_STAGE,
   SET_MISSION_NOTES,
   SET_MISSION_RATING,
@@ -101,6 +102,22 @@ export function testerGuideReducer(
               ...mission,
               tasks: { ...mission.tasks, [action.payload.taskId]: action.payload.checked },
             },
+          },
+        },
+        action.updatedAt,
+      );
+    }
+    case SET_ALL_GUIDE_TASKS: {
+      const mission = state.missions[action.payload.missionId];
+      const tasks = Object.fromEntries(
+        Object.keys(mission.tasks).map((taskId) => [taskId, action.payload.checked]),
+      );
+      return withUpdatedAt(
+        {
+          ...state,
+          missions: {
+            ...state.missions,
+            [action.payload.missionId]: { ...mission, tasks },
           },
         },
         action.updatedAt,
