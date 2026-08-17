@@ -18,11 +18,7 @@ import {
   UPDATE_GUIDE_REFLECTION,
   UPDATE_TESTER_DETAILS,
 } from "@/actions/types";
-import {
-  buildGuideCompleteEmailHref,
-  buildGuideExportPayload,
-  generateReadableGuideSummary,
-} from "@/lib/tester-guide-export";
+import { buildGuideExportPayload } from "@/lib/tester-guide-export";
 import { generateGuidePdf, getGuidePdfFileName } from "@/lib/tester-guide-pdf";
 import type {
   ExperienceReflection,
@@ -183,33 +179,11 @@ export const resetTesterGuide = (): TesterGuideAction => ({ type: RESET_TESTER_G
 export const clearGuideHandoff = (): TesterGuideAction => ({ type: CLEAR_GUIDE_HANDOFF });
 
 export interface GuideHandoffDependencies {
-  copyText: (text: string) => Promise<void>;
   createPdf: typeof generateGuidePdf;
   downloadPdf: (blob: Blob, fileName: string) => void;
-  sharePdf: (blob: Blob, fileName: string, title: string, text: string) => Promise<boolean>;
-  openEmail: (href: string) => void;
-}
-
-async function defaultCopyText(text: string): Promise<void> {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-
-  const scratch = document.createElement("textarea");
-  scratch.value = text;
-  scratch.setAttribute("readonly", "");
-  scratch.style.position = "fixed";
-  scratch.style.opacity = "0";
-  document.body.appendChild(scratch);
-  scratch.select();
-  const copied = document.execCommand("copy");
-  scratch.remove();
-  if (!copied) throw new Error("Clipboard access is unavailable.");
 }
 
 export const browserGuideHandoffDependencies: GuideHandoffDependencies = {
-  copyText: defaultCopyText,
   createPdf: generateGuidePdf,
   downloadPdf: (blob, fileName) => {
     const objectUrl = URL.createObjectURL(blob);
@@ -222,36 +196,10 @@ export const browserGuideHandoffDependencies: GuideHandoffDependencies = {
     downloadLink.remove();
     window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
   },
-  sharePdf: async (blob, fileName, title, text) => {
-    if (typeof File === "undefined" || !navigator.share || !navigator.canShare) return false;
-
-    const file = new File([blob], fileName, {
-      type: "application/pdf",
-      lastModified: Date.now(),
-    });
-    if (!navigator.canShare({ files: [file] })) return false;
-
-    await navigator.share({ files: [file], title, text });
-    return true;
-  },
-  openEmail: (href) => {
-    const emailLink = document.createElement("a");
-    emailLink.href = href;
-    emailLink.target = "_self";
-    emailLink.rel = "noopener";
-    emailLink.hidden = true;
-    document.body.appendChild(emailLink);
-    emailLink.click();
-    emailLink.remove();
-  },
 };
 
-function handoffFailureMessage(action: HandoffAction, error: unknown): string {
-  const fallback = {
-    copy: "Could not copy the text backup. Try downloading the PDF instead.",
-    email: "Could not open your email app. Download the PDF and attach it in webmail instead.",
-    pdf: "Could not prepare the PDF. Try the text backup instead.",
-  }[action];
+function handoffFailureMessage(error: unknown): string {
+  const fallback = "Could not prepare the PDF. Please try downloading it again.";
   return error instanceof Error && error.message ? `${fallback} ${error.message}` : fallback;
 }
 
@@ -271,62 +219,17 @@ function runHandoff<Result>(
     } catch (error) {
       dispatch({
         type: GUIDE_HANDOFF_FAILURE,
-        payload: { action, message: handoffFailureMessage(action, error) },
+        payload: { action, message: handoffFailureMessage(error) },
       });
       return false;
     }
   };
 }
 
-export function copyGuideSummary(
-  dependencies = browserGuideHandoffDependencies,
-): TesterGuideThunk<Promise<boolean>> {
-  return runHandoff("copy", "Readable feedback summary copied.", async (state) => {
-    const payload = buildGuideExportPayload(state.testerGuide);
-    await dependencies.copyText(generateReadableGuideSummary(payload));
-  });
-}
-
-export function shareGuidePdf(
-  teamEmail: string,
-  dependencies = browserGuideHandoffDependencies,
-): TesterGuideThunk<Promise<boolean>> {
-  return runHandoff(
-    "pdf",
-    (sharedNatively) =>
-      sharedNatively
-        ? `PDF share sheet opened. The recipient address (${teamEmail}) was copied when clipboard access was available.`
-        : "An organized email report opened. Nothing was downloaded to this device.",
-    async (state) => {
-      const payload = buildGuideExportPayload(state.testerGuide);
-      const fileName = getGuidePdfFileName(payload);
-      const pdf = await dependencies.createPdf(payload);
-      const identity = payload.tester.erthUsername || payload.tester.name || "Beta tester";
-
-      try {
-        await dependencies.copyText(teamEmail);
-      } catch {
-        // The native share sheet still works when clipboard permission is unavailable.
-      }
-
-      const sharedNatively = await dependencies.sharePdf(
-        pdf,
-        fileName,
-        `Erth beta tester report - ${identity}`,
-        `Send this completed report to ${teamEmail}.`,
-      );
-      if (sharedNatively) return true;
-
-      dependencies.openEmail(buildGuideCompleteEmailHref(payload, teamEmail));
-      return false;
-    },
-  );
-}
-
 export function downloadGuidePdf(
   dependencies = browserGuideHandoffDependencies,
 ): TesterGuideThunk<Promise<boolean>> {
-  return runHandoff("pdf", "PDF report downloaded.", async (state) => {
+  return runHandoff("pdf", "PDF downloaded. Now send it to Erth by DM or email.", async (state) => {
     const payload = buildGuideExportPayload(state.testerGuide);
     const pdf = await dependencies.createPdf(payload);
     dependencies.downloadPdf(pdf, getGuidePdfFileName(payload));

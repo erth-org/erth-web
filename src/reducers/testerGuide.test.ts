@@ -112,14 +112,14 @@ describe("testerGuideReducer", () => {
   });
 
   it("tracks handoff request, result, failure, and dismissal as transient state", () => {
-    const request: TesterGuideAction = { type: "GUIDE_HANDOFF_REQUEST", payload: "copy" };
+    const request: TesterGuideAction = { type: "GUIDE_HANDOFF_REQUEST", payload: "pdf" };
     const success: TesterGuideAction = {
       type: "GUIDE_HANDOFF_SUCCESS",
-      payload: { action: "copy", message: "Copied" },
+      payload: { action: "pdf", message: "Downloaded" },
     };
     const failure: TesterGuideAction = {
       type: "GUIDE_HANDOFF_FAILURE",
-      payload: { action: "email", message: "Email unavailable" },
+      payload: { action: "pdf", message: "Download unavailable" },
     };
 
     const loading = testerGuideReducer(createInitialTesterGuideState(), request);
@@ -127,16 +127,16 @@ describe("testerGuideReducer", () => {
     const failed = testerGuideReducer(succeeded, failure);
     const cleared = testerGuideReducer(failed, { type: "CLEAR_GUIDE_HANDOFF" });
 
-    expect(loading.handoff).toEqual({ status: "loading", action: "copy", message: "" });
+    expect(loading.handoff).toEqual({ status: "loading", action: "pdf", message: "" });
     expect(succeeded.handoff).toEqual({
       status: "success",
-      action: "copy",
-      message: "Copied",
+      action: "pdf",
+      message: "Downloaded",
     });
     expect(failed.handoff).toEqual({
       status: "error",
-      action: "email",
-      message: "Email unavailable",
+      action: "pdf",
+      message: "Download unavailable",
     });
     expect(cleared.handoff).toEqual({ status: "idle", action: null, message: "" });
   });

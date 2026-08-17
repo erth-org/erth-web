@@ -214,4 +214,20 @@ describe("TesterGuideExperience", () => {
 
     expect(screen.getByRole("heading", { name: /overall experience/i })).toHaveFocus();
   });
+
+  it("offers one download action and clearly explains how to send the PDF", async () => {
+    const user = userEvent.setup();
+    renderGuide();
+
+    await user.click(
+      screen.getByLabelText(/nothing reaches Erth until I download the PDF and send it/i),
+    );
+    await user.click(screen.getByRole("button", { name: /download and send/i }));
+
+    expect(screen.getByRole("heading", { name: /download and send/i })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /^download PDF$/i })).toBeInTheDocument();
+    expect(screen.getByText(/attach it in a DM to Erth or email it/i)).toBeInTheDocument();
+    expect(screen.getByText(/your report is not sent automatically/i)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /share|email|copy/i })).not.toBeInTheDocument();
+  });
 });

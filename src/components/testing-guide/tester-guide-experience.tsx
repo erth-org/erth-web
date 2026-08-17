@@ -5,22 +5,18 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
-  ClipboardCopy,
   Download,
   Flag,
   Pencil,
   Plus,
   RotateCcw,
   Save,
-  ShieldCheck,
-  Share2,
   Sparkles,
   Trash2,
 } from "lucide-react";
 import {
   addGuideIssue,
   clearGuideHandoff,
-  copyGuideSummary,
   downloadGuidePdf,
   removeGuideIssue,
   resetTesterGuide,
@@ -30,7 +26,6 @@ import {
   setMissionRating,
   setMissionStatus,
   setSharingAcknowledgement,
-  shareGuidePdf,
   toggleGuideTask,
   updateGuideIssue,
   updateGuideReflection,
@@ -101,7 +96,7 @@ const STAGE_LABELS: Record<GuideStageId, string> = {
   trust: "Test the safety net",
   issues: "Feedback log",
   reflection: "Overall experience",
-  review: "Review and send",
+  review: "Download and send",
 };
 
 type GuidedStageId = (typeof GUIDE_STAGE_ORDER)[number];
@@ -1046,72 +1041,82 @@ function ReviewStep() {
       {incompleteMissions.length || missingReflection ? (
         <Alert className="border-amber-500/35 bg-amber-500/[0.06]">
           <AlertCircle className="size-4 text-amber-400" />
-          <AlertTitle>Your feedback can still be shared</AlertTitle>
+          <AlertTitle>Your report can still be downloaded</AlertTitle>
           <AlertDescription>
             {incompleteMissions.length
               ? `${incompleteMissions.length} mission${incompleteMissions.length === 1 ? " has" : "s have"} no outcome selected. `
               : ""}
             {missingReflection ? "Some overall ratings are blank. " : ""}
-            Incomplete or blocked testing is valid evidence, so submission is never locked.
+            Incomplete or blocked testing is valid evidence, so your download is always available.
           </AlertDescription>
         </Alert>
       ) : (
         <Alert className="border-emerald-500/35 bg-emerald-500/[0.06]">
           <CheckCircle2 className="size-4 text-emerald-400" />
-          <AlertTitle>Your guided feedback is ready</AlertTitle>
+          <AlertTitle>Your feedback is ready to download</AlertTitle>
           <AlertDescription>
             Your answers are ready to turn into a clear, reviewable PDF report.
           </AlertDescription>
         </Alert>
       )}
 
-      <div className="rounded-2xl border border-primary/30 bg-primary/[0.05] p-5 sm:p-7">
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="mt-0.5 size-6 shrink-0 text-primary" />
-          <div>
-            <h3 className="text-xl font-semibold text-foreground">You stay in control</h3>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              This page prepares a clean PDF report. On supported phones, tablets, and computers,
-              the share button opens your device's share sheet so you can choose Mail, Gmail,
-              Outlook, or another installed app. You review everything before pressing Send.
+      <div className="rounded-2xl border border-primary/35 bg-primary/[0.06] p-5 sm:p-7">
+        <div>
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+            One last thing
+          </p>
+          <h3 className="mt-2 text-xl font-semibold text-foreground">Get your feedback to Erth</h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Two quick steps, then you’re done.
+          </p>
+        </div>
+
+        <ol className="mt-6 grid gap-3 sm:grid-cols-2">
+          <li className="rounded-xl border border-primary/35 bg-background/70 p-4">
+            <div className="flex items-start gap-3">
+              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                1
+              </span>
+              <div>
+                <h4 className="font-semibold text-foreground">Download your PDF</h4>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Save your completed report to this device.
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              disabled={guide.handoff.status === "loading"}
+              onClick={() => dispatch(downloadGuidePdf())}
+              className="mt-4 min-h-12 w-full rounded-xl border border-primary bg-primary text-primary-foreground shadow-sm transition-[background-color,box-shadow,transform] hover:bg-primary/90 hover:shadow-[0_8px_24px_-12px_oklch(0.72_0.18_45)] active:translate-y-px"
+            >
+              {guide.handoff.status === "success" ? <Check /> : <Download />}
+              {guide.handoff.status === "loading"
+                ? "Preparing PDF…"
+                : guide.handoff.status === "success"
+                  ? "PDF downloaded"
+                  : "Download PDF"}
+            </Button>
+          </li>
+
+          <li className="rounded-xl border border-border bg-background/50 p-4">
+            <div className="flex items-start gap-3">
+              <span className="grid size-7 shrink-0 place-items-center rounded-full border border-primary/45 bg-primary/10 text-xs font-semibold text-primary">
+                2
+              </span>
+              <div>
+                <h4 className="font-semibold text-foreground">Send the PDF to us</h4>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Attach it in a DM to Erth or email it to{" "}
+                  <span className="font-medium text-foreground">{siteConfig.contact.email}</span>.
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 rounded-lg border border-amber-500/25 bg-amber-500/[0.06] px-3 py-2 text-xs font-medium leading-relaxed text-foreground">
+              Your report is not sent automatically.
             </p>
-          </div>
-        </div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <Button
-            type="button"
-            disabled={guide.handoff.status === "loading"}
-            onClick={() => dispatch(shareGuidePdf(siteConfig.contact.email))}
-            className="min-h-12 rounded-xl border border-primary bg-primary text-primary-foreground shadow-sm transition-[background-color,box-shadow,transform] hover:bg-primary/90 hover:shadow-[0_8px_24px_-12px_oklch(0.72_0.18_45)] active:translate-y-px"
-          >
-            <Share2 /> Share or email PDF
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={guide.handoff.status === "loading"}
-            onClick={() => dispatch(downloadGuidePdf())}
-            className="min-h-12 rounded-xl border-border bg-background/75 text-foreground transition-[border-color,background-color,transform] hover:border-primary/55 hover:bg-primary/[0.07] hover:text-foreground active:translate-y-px"
-          >
-            <Download /> Download PDF
-          </Button>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          disabled={guide.handoff.status === "loading"}
-          onClick={() => dispatch(copyGuideSummary())}
-          className="mt-3 min-h-11 w-full rounded-xl text-muted-foreground hover:bg-background/75 hover:text-foreground"
-        >
-          <ClipboardCopy /> Copy text backup
-        </Button>
-        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-          This email action does not automatically save a file. If your browser supports direct file
-          sharing, the PDF stays in memory and opens in your chosen mail app. Otherwise, the report
-          opens as organized text in your default email app. It includes the feedback you provided
-          without empty or duplicate details. Download PDF remains an optional fallback for
-          browser-based webmail.
-        </p>
+          </li>
+        </ol>
       </div>
 
       <div className="flex flex-col gap-4 rounded-2xl border border-destructive/25 bg-destructive/[0.03] p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -1135,7 +1140,7 @@ function ReviewStep() {
             <AlertDialogHeader>
               <AlertDialogTitle>Reset all saved tester feedback?</AlertDialogTitle>
               <AlertDialogDescription>
-                This cannot be undone unless you already emailed or copied your feedback.
+                This cannot be undone unless you already downloaded your feedback.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1307,7 +1312,7 @@ export function TesterGuideExperience() {
         ? "Capture the exact moments that changed your confidence—broken, confusing, slow, or surprisingly good."
         : guide.currentStage === "reflection"
           ? "Zoom out from individual tasks and tell us whether Erth became understandable, reliable, and worth returning to."
-          : "Nothing has been submitted. Review what is saved in this browser, then choose how to share the report with the team.");
+          : "Download your PDF, then send that file to Erth by DM or email. It is not sent automatically.");
 
   useEffect(() => {
     if (restoredFromStorage) {
@@ -1480,8 +1485,8 @@ export function TesterGuideExperience() {
                     <AlertCircle className="size-4 text-amber-400" />
                     <AlertTitle>Progress cannot be saved in this browser</AlertTitle>
                     <AlertDescription>
-                      The guide still works, but refreshes will erase answers. Email or copy your
-                      feedback before leaving.
+                      The guide still works, but refreshes will erase answers. Download your PDF
+                      before leaving.
                     </AlertDescription>
                   </Alert>
                 ) : null}
@@ -1537,7 +1542,7 @@ export function TesterGuideExperience() {
             </section>
 
             <p className="tester-guide-no-print mx-auto mt-5 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
-              Your answers stay in this browser until you choose a sharing action. Need help? Email{" "}
+              Your answers stay in this browser until you download the report. Need help? Email{" "}
               <a
                 className="underline underline-offset-4 hover:text-foreground"
                 href={`mailto:${siteConfig.contact.email}`}

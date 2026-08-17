@@ -121,7 +121,7 @@ export const WELCOME_QUESTIONNAIRE = {
         email: {
           label: "Contact email",
           placeholder: "name@example.com",
-          hint: "Only included in the file or email you choose to share.",
+          hint: "Only included in the PDF you choose to send.",
         },
       },
     },
@@ -169,7 +169,7 @@ export const WELCOME_QUESTIONNAIRE = {
   },
   acknowledgement: {
     label:
-      "I understand this guide saves answers in this browser, and nothing reaches Erth until I explicitly share, email, or upload the generated report.",
+      "I understand this guide saves answers in this browser, and nothing reaches Erth until I download the PDF and send it by DM or email.",
     helper: "You can reset the guide and erase its saved progress at any time.",
   },
 } as const;
@@ -218,7 +218,7 @@ export const ISSUE_QUESTIONNAIRE = {
     },
     mediaNote: {
       label: "Screenshot or video note",
-      placeholder: "Example: IMG_4021, attached to email",
+      placeholder: "Example: IMG_4021, attached to your DM or email",
     },
   },
 } as const;
